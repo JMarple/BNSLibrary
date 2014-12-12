@@ -49,7 +49,7 @@ bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
 	{
 		for(int col = 0; col < B.n; col++)
 		{
-			int sum = 0;
+			float sum = 0;
 
 			for(int k = 0; k < B.m; k++)
 			{
@@ -166,7 +166,7 @@ float FindMatrixDeterminant(Matrix A)
 		float firstsum = 0;
 		for(int offset = 0; offset < A.m; offset++)
 		{
-			int product = 1;
+			float product = 1;
 			for(int i = 0; i < A.m; i++)
 			{
 				product *= GetMatrixAt(A, i, (i+offset)%A.m);
@@ -178,7 +178,7 @@ float FindMatrixDeterminant(Matrix A)
 		float secondsum = 0;
 		for(int offset = 0; offset < A.m; offset++)
 		{
-			int product = 1;
+			float product = 1;
 			for(int i = A.m-1; i >= 0; i--)
 			{
 				product *= GetMatrixAt(A, A.m-1-i, (i+offset)%A.m);
@@ -292,10 +292,15 @@ bool FindInverseMatrix(Matrix dst, Matrix A)
 	if(A.m != A.n || dst.m != A.m || dst.n != A.n)
 		return false;
 
+  bool realResult = true;
+
   FindCofactorMatrix(dst, A);
   FindTransposeMatrix(dst, dst);
 
   float det = FindMatrixDeterminant(A);
+
+  if(det == 0)
+  	realResult = false;
 
 	for(int i = 0; i < A.m; i++)
 	{
@@ -304,5 +309,6 @@ bool FindInverseMatrix(Matrix dst, Matrix A)
 			SetMatrixAt(dst, i, j, GetMatrixAt(dst, i, j) / det);
 		}
 	}
-	return false;
+
+	return realResult;
 }
