@@ -29,15 +29,16 @@ float FindSquareMahalanobisDistance(Matrix data, Matrix mean, Matrix cov)
   // Go back to original vector
   FindTransposeMatrix(sub1, sub1);
 
-
   MultiplyMatrix(result, sub2, sub1);
 
-  // NOT THREAD SAFE!!!
-  popBufferLocation(data.m);
-  popBufferLocation(data.m);
-  popBufferLocation(1);
+  float finalResult = GetMatrixAt(result, 0, 0);
 
-  return GetMatrixAt(result, 0, 0);
+  DeleteMatrix(sub1);
+  DeleteMatrix(sub2);
+  DeleteMatrix(inverse);
+  DeleteMatrix(result);
+
+  return finalResult;
 }
 
 float FindMahalanobisDistance(Matrix data, Matrix mean, Matrix cov)

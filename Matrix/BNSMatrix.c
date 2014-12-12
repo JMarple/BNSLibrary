@@ -5,7 +5,15 @@ void CreateNewMatrix(Matrix mat, int m, int n)
 	// Dimensions
   mat.m = m;
   mat.n = n;
-  mat.bufferLocation = pushBufferLocation(m*n);
+  mat.bufferLocation = bnsMalloc(m*n);
+}
+
+void DeleteMatrix(Matrix mat)
+{
+	mat.m = 0;
+	mat.n = 0;
+	bnsFree(mat.bufferLocation);
+	mat.bufferLocation = -1;
 }
 
 void SetMatrixAt(Matrix mat, int m, int n, float value)
@@ -42,7 +50,6 @@ bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
 
   Matrix tmpCol;
 	CreateNewMatrix(tmpCol, B.m, 1);
-	lockBuffer();
 
 	// Loop through each row and column of our second matrix
 	for(int row = 0; row < A.m; row++)
@@ -60,11 +67,7 @@ bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
 		}
 	}
 
-	// Free up the space we took to write the tmpRow
-	popBufferLocation(B.m);
-
-	// Allow other tasks to use the memory again
-  unlockBuffer();
+	DeleteMatrix(tmpCol);
 
 	return true;
 }
@@ -73,7 +76,6 @@ void SwapRowsInMatrix(Matrix A, int row1, int row2)
 {
 	Matrix tmpRow;
 	CreateNewMatrix(tmpRow, 1, A.n);
-	lockBuffer();
 
 	// Copy first row
 	for(int i = 0; i < A.n; i++)
@@ -88,10 +90,7 @@ void SwapRowsInMatrix(Matrix A, int row1, int row2)
 		SetMatrixAt(A, row2, i, GetMatrixAt(tmpRow, 0, i));
 
 	// Free up the space we took to write the tmpRow
-	popBufferLocation(A.n);
-
-	// Allow other tasks to use the memory again
-  unlockBuffer();
+	DeleteMatrix(tmpRow);
 }
 
 // Searches through all the rows in a single column to find the largest number in it
@@ -241,6 +240,8 @@ bool FindMatrixOfMinors(Matrix dst, Matrix A)
 			SetMatrixAt(dst, j, i, det);
 		}
 	}
+
+	DeleteMatrix(tmp);
 
 	return true;
 }

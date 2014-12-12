@@ -21,7 +21,7 @@
 #define __BNS_MATRIX_BUILDER_H
 
 // Size of matrix buffer
-#define BUFFER_SIZE 100
+#define BUFFER_SIZE 1000
 
 struct MatrixBuilder
 {

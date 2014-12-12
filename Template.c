@@ -2,6 +2,9 @@
 
 task main()
 {
+	initMemory();
+	bnsPrintMemory(0, 100);
+
   Matrix data;
   CreateNewMatrix(data, 3, 1);
   SetMatrixAt(data, 0, 0, 1);
@@ -23,4 +26,6 @@ task main()
   //float result = 0;
   float result = MultivariateNormalDistribution(data, mean, cov);
   writeDebugStreamLine("Dist = %f", result);
+
+  bnsPrintMemory(0, 100);
 }
