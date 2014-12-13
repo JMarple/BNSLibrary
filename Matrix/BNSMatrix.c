@@ -5,15 +5,53 @@ void CreateNewMatrix(Matrix mat, int m, int n)
 	// Dimensions
   mat.m = m;
   mat.n = n;
+  mat.inUse = true;
   mat.bufferLocation = bnsMalloc(m*n);
+
+  //for(int i = 0; i <
 }
 
 void DeleteMatrix(Matrix mat)
 {
 	mat.m = 0;
 	mat.n = 0;
-	bnsFree(mat.bufferLocation);
-	mat.bufferLocation = -1;
+	if(mat.inUse == true)
+	{
+		bnsFree(mat.bufferLocation);
+		mat.bufferLocation = -1;
+	}
+}
+
+bool CopyMatrixToMatrix(Matrix dst, Matrix src)
+{
+	// Check we have enough space to copy
+	if(dst.m*dst.n != src.m*src.n)
+	{
+		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot copy a %d, %d to a %d, %d matrix, not the same number of cells\n***\n", src.m, src.n, dst.m, dst.n);
+		return false;
+  }
+
+  dst.m = src.m;
+  dst.n = src.n;
+
+	for(int i = 0; i < dst.m; i++)
+	{
+		for(int j = 0; j < dst.n; j++)
+		{
+			SetMatrixAt(dst, i, j, GetMatrixAt(src, i, j));
+		}
+	}
+
+	return true;
+}
+
+bool CopyMatrix(Matrix dst, Matrix src)
+{
+	dst.m = src.m;
+	dst.n = src.n;
+	dst.bufferLocation = src.bufferLocation;
+
+	return true;
 }
 
 void SetMatrixAt(Matrix mat, int m, int n, float value)
@@ -46,10 +84,16 @@ void PrintMatrix(Matrix A)
 bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
 {
   if(A.n != B.m)
+  {
+  	writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Multiply a %d, %d to a %d, %d matrix, incorrect sizes\n***\n", A.m, A.n, B.m, B.n);
   	return false;
+  }
 
   Matrix tmpCol;
 	CreateNewMatrix(tmpCol, B.m, 1);
+
+	Matrix dstCopy;
+	CreateNewMatrix(dstCopy, A.m, B.n);
 
 	// Loop through each row and column of our second matrix
 	for(int row = 0; row < A.m; row++)
@@ -63,11 +107,17 @@ bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
 				sum += GetMatrixAt(A, row, k) * GetMatrixAt(B, k, col);
 			}
 
-			SetMatrixAt(dst, row, col, sum);
+			SetMatrixAt(dstCopy, row, col, sum);
 		}
 	}
 
+	// Copy our results matrix to our destination matrix
+	DeleteMatrix(dst);
+	CreateNewMatrix(dst, dstCopy.m, dstCopy.n);
+	CopyMatrixToMatrix(dst, dstCopy);
+
 	DeleteMatrix(tmpCol);
+	DeleteMatrix(dstCopy);
 
 	return true;
 }
@@ -116,7 +166,10 @@ int GetLargestColumnFromMatrix(Matrix A, int col, int row1, int row2)
 bool AddMatrix(Matrix dst, Matrix A, Matrix B)
 {
 	if(A.m != B.m || A.n != B.n)
-		return false;
+	{
+		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Add a %d, %d to a %d, %d matrix, not the same size\n***\n", A.m, A.n, B.m, B.n);
+  	return false;
+	}
 
   for(int i = 0; i < A.m; i++)
   {
@@ -135,8 +188,10 @@ bool AddMatrix(Matrix dst, Matrix A, Matrix B)
 bool SubMatrix(Matrix dst, Matrix A, Matrix B)
 {
 	if(A.m != B.m || A.n != B.n)
+	{
+		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Subtract a %d, %d to a %d, %d matrix, not the same size\n***\n", A.m, A.n, B.m, B.n);
 		return false;
-
+  }
   for(int i = 0; i < A.m; i++)
   {
   	for(int j = 0; j < A.n; j++)
@@ -154,40 +209,49 @@ float FindMatrixDeterminant(Matrix A)
 {
 	// Ensure this is a square matrix
 	if(A.m != A.n)
+	{
+		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot find a determinant of a %d by %d matrix, not a square\n***\n", A.m, A.n);
 		return 0;
-
-	if(A.m == 2)
+	}
+	if(A.m == 1)
+	{
+		return GetMatrixAt(A, 0, 0);
+	}
+	else if(A.m == 2)
 	{
 		return GetMatrixAt(A, 0, 0) * GetMatrixAt(A, 1, 1) - GetMatrixAt(A, 0, 1) * GetMatrixAt(A, 1, 0);
   }
-	else if(A.m == 3)
-	{
-		float firstsum = 0;
-		for(int offset = 0; offset < A.m; offset++)
-		{
-			float product = 1;
-			for(int i = 0; i < A.m; i++)
-			{
-				product *= GetMatrixAt(A, i, (i+offset)%A.m);
-			}
-			//writeDebugStreamLine("Product = %f", product);
-			firstsum += product;
-		}
+  else
+  {
+  	float sumOfDet = 0;
+  	Matrix detMat;
+  	CreateNewMatrix(detMat, A.m-1, A.n-1);
 
-		float secondsum = 0;
-		for(int offset = 0; offset < A.m; offset++)
-		{
-			float product = 1;
-			for(int i = A.m-1; i >= 0; i--)
-			{
-				product *= GetMatrixAt(A, A.m-1-i, (i+offset)%A.m);
-			}
-			//writeDebugStreamLine("Product = %f", product);
-			secondsum += product;
-		}
+  	int multiplier = 1;
+  	for(int col = 0; col < A.n; col++)
+  	{
+  		int index = 0;
+  		for(int i = 0; i < A.n; i++)
+  		{
+  			// If we aren't skipping this column
+  			if(col != i)
+  			{
+  				for(int row = 1; row < A.m; row++)
+  				{
+  						SetMatrixAt(detMat, row-1, index, GetMatrixAt(A, row, i));
+  				}
+  				index++;
+  			}
+  		}
 
-		return firstsum - secondsum;
-	}
+  		sumOfDet += multiplier * GetMatrixAt(A, 0, col) * FindMatrixDeterminant(detMat);
+  		multiplier *= -1;
+  	}
+
+  	DeleteMatrix(detMat);
+
+  	return sumOfDet;
+  }
 
 	return 0;
 }
@@ -196,7 +260,10 @@ float FindMatrixTrace(Matrix A)
 {
 	// Ensure this is a square matrix
 	if(A.m != A.n)
+	{
+		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot find the trace of a %d by %d matrix, not a square matrix!\n***\n", A.m, A.n);
 		return 0;
+  }
 
 	// Return Trace
 	float trace = 1;
@@ -235,7 +302,6 @@ bool FindMatrixOfMinors(Matrix dst, Matrix A)
 				}
 				x++;
 			}
-
 			float det = FindMatrixDeterminant(tmp);
 			SetMatrixAt(dst, j, i, det);
 		}
@@ -271,32 +337,38 @@ bool FindCofactorMatrix(Matrix dst, Matrix A)
 // Only works for square matricies and vectors atm
 void FindTransposeMatrix(Matrix dst, Matrix A)
 {
-	for(int i = 0; i < A.m-1; i++)
+	Matrix tmpDst;
+	CreateNewMatrix(tmpDst, A.n, A.m);
+
+	for(int i = 0; i < A.m; i++)
 	{
-		for(int j = i + 1; j < A.n; j++)
+		for(int j = 0; j < A.n; j++)
 		{
-			int posA = GetMatrixAt(A, i, j);
-			int posB = GetMatrixAt(A, j, i);
-			SetMatrixAt(dst, i, j, posB);
-			SetMatrixAt(dst, j, i, posA);
+			SetMatrixAt(tmpDst, j, i, GetMatrixAt(A, i, j));
 		}
 	}
 
-	int m = dst.m;
-	dst.m = dst.n;
-	dst.n = m;
+	DeleteMatrix(dst);
+	CreateNewMatrix(dst, tmpDst.m, tmpDst.n);
+	CopyMatrixToMatrix(dst, tmpDst);
+
+	DeleteMatrix(tmpDst);
 }
 
 bool FindInverseMatrix(Matrix dst, Matrix A)
 {
 	// Ensure this is a square matrix
-	if(A.m != A.n || dst.m != A.m || dst.n != A.n)
+	if(A.m != A.n)
 		return false;
+
+  Matrix dstTmp;
+  CreateNewMatrix(dstTmp, A.m, A.n);
 
   bool realResult = true;
 
-  FindCofactorMatrix(dst, A);
-  FindTransposeMatrix(dst, dst);
+  FindCofactorMatrix(dstTmp, A);
+
+  FindTransposeMatrix(dstTmp, dstTmp);
 
   float det = FindMatrixDeterminant(A);
 
@@ -307,9 +379,14 @@ bool FindInverseMatrix(Matrix dst, Matrix A)
 	{
 		for(int j = 0; j < A.n; j++)
 		{
-			SetMatrixAt(dst, i, j, GetMatrixAt(dst, i, j) / det);
+			SetMatrixAt(dstTmp, i, j, GetMatrixAt(dstTmp, i, j) / det);
 		}
 	}
+
+	DeleteMatrix(dst);
+	CreateNewMatrix(dst, A.m, A.n);
+	CopyMatrixToMatrix(dst, dstTmp);
+	DeleteMatrix(dstTmp);
 
 	return realResult;
 }

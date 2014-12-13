@@ -7,5 +7,6 @@
 // Features
 #include "Probability\MahalanobisDistance.c"
 #include "Probability\NormalDistribution.c"
+#include "Filters\KalmanFilter.c"
 
 #endif

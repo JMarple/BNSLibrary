@@ -23,20 +23,15 @@
 // Size of matrix buffer
 #define BUFFER_SIZE 1000
 
-struct MatrixBuilder
-{
-	// Keeps track of where new matricies are to be inputed
-	int head;
+// Bit that defines if a chunk of space is free or not
+#define MEM_FREE_BIT 20
 
-	// If true, do not add or delete from the buffer
-	bool locked;
-
-	// Matrix buffer, increase this number for additional matricies
-	float buffer[BUFFER_SIZE];
-};
+// Bit that defines if a point in memory defines a
+//  chunk or not.  Don't overwite if it is!
+#define MEM_PROT_BIT 21
 
 // Global variable that matricies call to
-MatrixBuilder MatBuilder;
+float bnsHeap[BUFFER_SIZE];
 
 // Include Source Code
 #include "BNSMatrixBuilder.c"

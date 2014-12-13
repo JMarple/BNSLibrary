@@ -17,7 +17,7 @@
 //
 // Basic Usage:
 //   Matrix mat1;
-//   NewMatrix(mat1, 3, 3);
+//   CreateNewMatrix(mat1, 3, 3);
 //   SetMatrixAt(mat1, 0, 0, 3.14);
 //   float det = FindMatrixDeterminant(mat1);
 //   etc.
@@ -32,6 +32,9 @@ struct Matrix
 
 	// Number of columns
 	int n;
+
+	// Number f
+	bool inUse;
 
 	// Location in our "Matrix Builder" buffer
 	int bufferLocation;
@@ -61,8 +64,6 @@ bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B);
 // FindInverseMatrix(...)
 // Finds A^-1 and returns it to dst
 // Note: dst MUST be a different matrix from A
-// Note: This is restricted to only 2x2 and 3x3 matricies
-//   for now!
 bool FindInverseMatrix(Matrix dst, Matrix A);
 
 // AddMatrix(...)
@@ -82,8 +83,7 @@ bool SubMatrix(Matrix dst, Matrix A, Matrix B);
 void FindTransposeMatrix(Matrix dst, Matrix A);
 
 // FindMatrixDeterminant(...)
-// Returns the determinant
-// Note: This currently only works for 2x2 and 3x3 matricies!
+// Returns the determinant of a given nxn matrix
 float FindMatrixDeterminant(Matrix A);
 
 // FindMatrixTrace(...)
