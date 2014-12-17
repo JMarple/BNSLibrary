@@ -2,10 +2,10 @@
 #define __BNS_LIB_H
 
 // Core
+#include "Core\BNSHeap.h"
 #include "Matrix\BNSMatrix.h"
 
 // Features
-#include "Probability\MahalanobisDistance.c"
 #include "Probability\NormalDistribution.c"
 #include "Filters\KalmanFilter.c"
 

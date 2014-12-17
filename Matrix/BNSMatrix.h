@@ -10,10 +10,11 @@
 //
 // Source Code:
 //   BNSMatrix.c
+//   BNSMatrixArithmetic.c
 //
 // Dependencies:
-//   BNSMatrixBuilder.c
-//   BNSMatrixBuilder.h
+//   Core\BNSHeap.c
+//   Core\BNSHeap.h
 //
 // Basic Usage:
 //   Matrix mat1;
@@ -41,10 +42,15 @@ struct Matrix
 };
 
 // CreateNewMatrix(...)
-// Initializes memory for the matrix
+// Creates a unique matrix defaulted with zeros
 // m is the height (# of rows), n is the width (# of cols)
 //  aka. we are creating an mxn matrix
 void CreateZerosMatrix(Matrix mat, int m, int n);
+
+// CreateMatrix(...)
+// Initalizes a matrix given an character input
+// Returns true if
+bool CreateMatrix(Matrix mat, char* s);
 
 // SetMatrixAt(...)
 // Sets a specific location in a matrix
@@ -91,9 +97,12 @@ float FindMatrixDeterminant(Matrix A);
 float FindMatrixTrace(Matrix A);
 
 // Include Dependencies
-#include "BNSMatrixBuilder.h"
+#ifndef __BNS_HEAP_H
+	#include "..\Core\BNSHeap.h"
+#endif
 
 // Include Source Code
 #include "BNSMatrix.c"
+#include "BNSMatrixArithmetic.c"
 
 #endif

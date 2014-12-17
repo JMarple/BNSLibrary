@@ -1,4 +1,4 @@
-// BNSMatrixBuilder.h
+// BNSHeap.h
 //
 // Author: Justin Marple with Team BNS
 // Contact: jmarple@umass.edu
@@ -9,16 +9,13 @@
 // set buffer size
 //
 // Source Code:
-//   BNSMatrixBuilder.c
+//   BNSHeap.c
 //
 // Dependencies:
 //   None!
-//
-// Basic Usage:
-//   None! Used by BNSMatrix exclusively
 
-#ifndef __BNS_MATRIX_BUILDER_H
-#define __BNS_MATRIX_BUILDER_H
+#ifndef __BNS_HEAP_H
+#define __BNS_HEAP_H
 
 // Size of matrix buffer
 #define BUFFER_SIZE 1000
@@ -28,12 +25,13 @@
 
 // Bit that defines if a point in memory defines a
 //  chunk or not.  Don't overwite if it is!
+// Note: This is not currently being used to due to negative numbers
 #define MEM_PROT_BIT 21
 
 // Global variable that matricies call to
 float bnsHeap[BUFFER_SIZE];
 
 // Include Source Code
-#include "BNSMatrixBuilder.c"
+#include "BNSHeap.c"
 
 #endif

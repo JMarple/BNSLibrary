@@ -1,3 +1,5 @@
+#pragma systemFile
+
 struct KalmanFilter
 {
 	// Data output, n-length

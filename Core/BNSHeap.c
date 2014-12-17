@@ -1,3 +1,5 @@
+#pragma systemFile
+
 bool bnsIsProtected(int space);
 
 float getBufferElement(int element)
