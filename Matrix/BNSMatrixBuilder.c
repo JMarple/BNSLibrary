@@ -86,8 +86,8 @@ void bnsFree(int space)
 	bnsHeap[space] = x;
 
 	// Erase information (could be slow.. might want to remove this)
-	for(int i = space+1; i < space+bnsGetData(space); i++)
-		bnsHeap[i] = 0;
+	//for(int i = space+1; i < space+bnsGetData(space); i++)
+		//bnsHeap[i] = 0;
 
 	bnsDefrag();
 }

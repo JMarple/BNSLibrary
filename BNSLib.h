@@ -9,4 +9,14 @@
 #include "Probability\NormalDistribution.c"
 #include "Filters\KalmanFilter.c"
 
+// Anything that needs to be initiated should go here
+void BNS()
+{
+	// Start Heap
+	initMemory();
+
+	// Start random number generation
+	srand(nSysTime);
+}
+
 #endif

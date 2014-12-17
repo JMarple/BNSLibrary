@@ -30,8 +30,8 @@ void KalmanInitialize(KalmanFilter kal, int variables, int measurements,
 											Matrix covarianceMatrixZ,
 											Matrix moveVector)
 {
-	CreateNewMatrix(kal.dataVector, variables, 1);
-	CreateNewMatrix(kal.measurementVector, measurements, 1);
+	CreateZerosMatrix(kal.dataVector, variables, 1);
+	CreateZerosMatrix(kal.measurementVector, measurements, 1);
 
 	CopyMatrix(kal.updateMatrix, updateMatrix);
 	CopyMatrix(kal.extractionMatrix, extractionMatrix);

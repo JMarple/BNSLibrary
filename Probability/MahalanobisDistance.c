@@ -6,10 +6,10 @@ float FindSquareMahalanobisDistance(Matrix data, Matrix mean, Matrix cov)
 	Matrix sub2;
 	Matrix result;
 	Matrix inverse;
-	CreateNewMatrix(sub1, data.m, 1);
-	CreateNewMatrix(sub2, 1, data.m);
-	CreateNewMatrix(inverse, cov.m, cov.n);
-	CreateNewMatrix(result, 1, 1);
+	CreateZerosMatrix(sub1, data.m, 1);
+	CreateZerosMatrix(sub2, 1, data.m);
+	CreateZerosMatrix(inverse, cov.m, cov.n);
+	CreateZerosMatrix(result, 1, 1);
 
 	// (x-u)^T*cov^-1*(x-u)
 

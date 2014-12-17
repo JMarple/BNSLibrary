@@ -44,7 +44,7 @@ struct Matrix
 // Initializes memory for the matrix
 // m is the height (# of rows), n is the width (# of cols)
 //  aka. we are creating an mxn matrix
-void CreateNewMatrix(Matrix mat, int m, int n);
+void CreateZerosMatrix(Matrix mat, int m, int n);
 
 // SetMatrixAt(...)
 // Sets a specific location in a matrix
