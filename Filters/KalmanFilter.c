@@ -58,8 +58,8 @@ void KalmanPredict(KalmanFilter kal)
 	MultiplyMatrix(P_next, P_next, F_trans);
 
 	// Copy results to the kalmanfilter class
-	CopyMatrixToMatrix(kal.dataVector, x_next);
-	CopyMatrixToMatrix(kal.covarianceMatrixX, P_next);
+	CopyMatrixByValue(kal.dataVector, x_next);
+	CopyMatrixByValue(kal.covarianceMatrixX, P_next);
 
 	DeleteMatrix(x_next);
 	DeleteMatrix(P_next);
@@ -108,8 +108,8 @@ void KalmanUpdate(KalmanFilter kal, Matrix meas)
 	SubMatrix(P_next, kal.covarianceMatrixX, P_next);
 
 	// Copy results to the kalmanfilter class
-	CopyMatrixToMatrix(kal.dataVector, x_next);
-	CopyMatrixToMatrix(kal.covarianceMatrixX, P_next);
+	CopyMatrixByValue(kal.dataVector, x_next);
+	CopyMatrixByValue(kal.covarianceMatrixX, P_next);
 
 	DeleteMatrix(y);
 	DeleteMatrix(S);

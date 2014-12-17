@@ -8,6 +8,7 @@
 // Features
 #include "Probability\NormalDistribution.c"
 #include "Filters\KalmanFilter.c"
+#include "Filters\MedianFilter.c"
 
 // Anything that needs to be initiated should go here
 void BNS()

@@ -156,14 +156,10 @@ void DeleteMatrix(Matrix mat)
 	}
 }
 
-bool CopyMatrixToMatrix(Matrix dst, Matrix src)
+bool CopyMatrixByValue(Matrix dst, Matrix src)
 {
-	// Check we have enough space to copy
-	if(dst.m*dst.n != src.m*src.n)
-	{
-		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot copy a %d, %d to a %d, %d matrix, not the same number of cells\n***\n", src.m, src.n, dst.m, dst.n);
-		return false;
-	}
+	DeleteMatrix(dst);
+	CreateZerosMatrix(dst, src.m, src.n);
 
 	dst.m = src.m;
 	dst.n = src.n;

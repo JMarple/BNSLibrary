@@ -34,7 +34,7 @@ bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
 	// Copy our results matrix to our destination matrix
 	DeleteMatrix(dst);
 	CreateZerosMatrix(dst, dstCopy.m, dstCopy.n);
-	CopyMatrixToMatrix(dst, dstCopy);
+	CopyMatrixByValue(dst, dstCopy);
 
 	DeleteMatrix(tmpCol);
 	DeleteMatrix(dstCopy);
@@ -280,7 +280,7 @@ void FindTransposeMatrix(Matrix dst, Matrix A)
 
 	DeleteMatrix(dst);
 	CreateZerosMatrix(dst, tmpDst.m, tmpDst.n);
-	CopyMatrixToMatrix(dst, tmpDst);
+	CopyMatrixByValue(dst, tmpDst);
 
 	DeleteMatrix(tmpDst);
 }
@@ -315,7 +315,7 @@ bool FindInverseMatrix(Matrix dst, Matrix A)
 
 	DeleteMatrix(dst);
 	CreateZerosMatrix(dst, A.m, A.n);
-	CopyMatrixToMatrix(dst, dstTmp);
+	CopyMatrixByValue(dst, dstTmp);
 	DeleteMatrix(dstTmp);
 
 	return realResult;
