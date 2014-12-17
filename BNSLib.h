@@ -6,7 +6,7 @@
 #include "Matrix\BNSMatrix.h"
 
 // Features
-#include "Probability\GaussianNormalDistribution.c"
+#include "Probability\Gaussian.c"
 #include "Filters\KalmanFilter.c"
 #include "Filters\MedianFilter.c"
 

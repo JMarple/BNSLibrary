@@ -129,11 +129,11 @@ task main()
 
 	// Output estimation 1
 	writeDebugStreamLine("Pos1 = %f, Vel1 = %f",
-	GetMatrixAt(filter.dataVector, 0, 0),
-	GetMatrixAt(filter.dataVector, 1, 0));
+	GetMatrixAt(filter.meanVector, 0, 0),
+	GetMatrixAt(filter.meanVector, 1, 0));
 
 	// Output estimation 2
 	writeDebugStreamLine("Pos2 = %f, Vel2 = %f",
-	GetMatrixAt(filter.dataVector, 2, 0),
-	GetMatrixAt(filter.dataVector, 3, 0));
+	GetMatrixAt(filter.meanVector, 2, 0),
+	GetMatrixAt(filter.meanVector, 3, 0));
 }
