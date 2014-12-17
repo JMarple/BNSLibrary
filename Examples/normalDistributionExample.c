@@ -37,5 +37,4 @@ task main()
 	// Print Result of the PDF
 	float result = MultivariateNormalDistribution(data, mean, cov);
 	writeDebugStreamLine("Dist = %f", result);
-
 }

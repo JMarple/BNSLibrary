@@ -10,7 +10,26 @@ void CreateZerosMatrix(Matrix mat, int m, int n)
 
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++)
-		SetMatrixAt(mat, i, j, 0);
+			SetMatrixAt(mat, i, j, 0);
+}
+
+void CreateIdentityMatrix(Matrix mat, int n)
+{
+	mat.m = n;
+	mat.n = n;
+	mat.inUse = true;
+	mat.bufferLocation = bnsMalloc(n*n);
+
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < n; j++)
+		{
+			if(i==j)
+				SetMatrixAt(mat, i, j, 1);
+		  else
+				SetMatrixAt(mat, i, j, 0);
+		}
+	}
 }
 
 bool ParseMatrixString(Matrix mat, char* s)

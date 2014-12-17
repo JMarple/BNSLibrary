@@ -1,5 +1,5 @@
 BNSLib
 <br/>
-Compatible with RobotC 4.26
+Compatible with RobotC 4.27
 <br/>
 Readme to come in the future...

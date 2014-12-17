@@ -90,6 +90,11 @@ bool AddMatrix(Matrix dst, Matrix A, Matrix B)
 		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Add a %d, %d to a %d, %d matrix, not the same size\n***\n", A.m, A.n, B.m, B.n);
 		return false;
 	}
+	if(dst.inUse == false || dst.m != A.m || dst.n != A.n)
+	{
+		DeleteMatrix(dst);
+		CreateZerosMatrix(dst, A.m, A.n);
+	}
 
 	for(int i = 0; i < A.m; i++)
 	{
@@ -111,6 +116,11 @@ bool SubMatrix(Matrix dst, Matrix A, Matrix B)
 	{
 		writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Subtract a %d, %d to a %d, %d matrix, not the same size\n***\n", A.m, A.n, B.m, B.n);
 		return false;
+	}
+	if(dst.inUse == false || dst.m != A.m || dst.n != A.n)
+	{
+		DeleteMatrix(dst);
+		CreateZerosMatrix(dst, A.m, A.n);
 	}
 	for(int i = 0; i < A.m; i++)
 	{

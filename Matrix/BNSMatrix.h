@@ -47,6 +47,11 @@ struct Matrix
 //  aka. we are creating an mxn matrix
 void CreateZerosMatrix(Matrix mat, int m, int n);
 
+// CreateIdentityMatrix(...)
+// Creates a unique nxn identity matrix, where the
+//   major digonals will be filled with zeros
+void CreateIdentityMatrix(Matrix mat, int n);
+
 // CreateMatrix(...)
 // Initalizes a matrix given an character input
 // Returns true if
@@ -84,8 +89,6 @@ bool SubMatrix(Matrix dst, Matrix A, Matrix B);
 
 // FindTransposeMatrix(...)
 // Returns the transpose of A to dst
-// Note: This currently only works for square matricies
-//   and vectors!
 void FindTransposeMatrix(Matrix dst, Matrix A);
 
 // FindMatrixDeterminant(...)
@@ -96,6 +99,14 @@ float FindMatrixDeterminant(Matrix A);
 // Returns the trace of Matrix A
 float FindMatrixTrace(Matrix A);
 
+// MultiplyScalarToMatrix(...)
+// Multiplies each element in a matrix by a given scalar
+void MultiplyScalarToMatrix(Matrix mat, float scalar);
+
+// DivideScalarToMatrix(...)
+// Divides each element in a matrix by a given scalar
+void DivideScalarToMatrix(Matrix mat, float scalar);
+
 // Include Dependencies
 #ifndef __BNS_HEAP_H
 	#include "..\Core\BNSHeap.h"
@@ -104,5 +115,6 @@ float FindMatrixTrace(Matrix A);
 // Include Source Code
 #include "BNSMatrix.c"
 #include "BNSMatrixArithmetic.c"
+#include "BNSMatrixScalar.c"
 
 #endif
