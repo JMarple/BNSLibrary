@@ -13,7 +13,7 @@ struct Gaussian
 // Initialize basic values for a gaussian
 void GaussianInit(Gaussian gau, Matrix mean, Matrix cov)
 {
-	DeleteMatrix(gau.mean);
+  DeleteMatrix(gau.mean);
 	DeleteMatrix(gau.cov);
 	CopyMatrixByValue(gau.mean, mean);
 	CopyMatrixByValue(gau.cov, cov);
