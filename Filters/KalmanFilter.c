@@ -3,7 +3,7 @@
 struct KalmanFilter
 {
 	// Data output, n-length
-  Matrix dataVector; // "x"	nx1 vector
+  Matrix meanVector; // "x"	nx1 vector
 
   // Sensors measurements, m-length
   Matrix measurementVector; // "z" mx1 vector
@@ -32,7 +32,7 @@ void KalmanInitialize(KalmanFilter kal, int variables, int measurements,
 											Matrix covarianceMatrixZ,
 											Matrix moveVector)
 {
-	CreateZerosMatrix(kal.dataVector, variables, 1);
+	CreateZerosMatrix(kal.meanVector, variables, 1);
 	CreateZerosMatrix(kal.measurementVector, measurements, 1);
 
 	CopyMatrix(kal.updateMatrix, updateMatrix);
@@ -42,6 +42,11 @@ void KalmanInitialize(KalmanFilter kal, int variables, int measurements,
 	CopyMatrix(kal.covarianceMatrixZ, covarianceMatrixZ);
 }
 
+// Kalman Filter Prediction Step
+// We "predict" what the next data will be
+//   What this means is the filter's mean will change
+//   but we loose "certainty" about where the data is
+//   (aka. the covariance will increase in this step)
 void KalmanPredict(KalmanFilter kal)
 {
 	Matrix x_next;
@@ -49,16 +54,16 @@ void KalmanPredict(KalmanFilter kal)
 	Matrix F_trans;
 
 	// Calculate x_next (update guassian mean)
-	MultiplyMatrix(x_next, kal.updateMatrix, kal.dataVector);
-	AddMatrix(x_next, x_next, kal.moveVector);
+	MatrixMultiplication(x_next, kal.updateMatrix, kal.meanVector);
+	MatrixAdd(x_next, x_next, kal.moveVector);
 
 	// Calculate p_next (update guassian covariance);
-	MultiplyMatrix(P_next, kal.updateMatrix, kal.covarianceMatrixX);
+	MatrixMultiplication(P_next, kal.updateMatrix, kal.covarianceMatrixX);
 	FindTransposeMatrix(F_trans, kal.updateMatrix);
-	MultiplyMatrix(P_next, P_next, F_trans);
+	MatrixMultiplication(P_next, P_next, F_trans);
 
 	// Copy results to the kalmanfilter class
-	CopyMatrixByValue(kal.dataVector, x_next);
+	CopyMatrixByValue(kal.meanVector, x_next);
 	CopyMatrixByValue(kal.covarianceMatrixX, P_next);
 
 	DeleteMatrix(x_next);
@@ -66,6 +71,10 @@ void KalmanPredict(KalmanFilter kal)
 	DeleteMatrix(F_trans);
 }
 
+// Kalman Update Step
+// We "update" given what we get for data
+//   The filter will use the data given to lower our
+//   uncertainty (aka. covariance)
 void KalmanUpdate(KalmanFilter kal, Matrix meas)
 {
 	CopyMatrix(kal.measurementVector, meas);
@@ -73,44 +82,45 @@ void KalmanUpdate(KalmanFilter kal, Matrix meas)
 	// Find the difference between the move (measurement)
 	//   and what we predicted (extraction * data)
 	Matrix y;
-	MultiplyMatrix(y, kal.extractionMatrix, kal.dataVector);
-	SubMatrix(y, kal.measurementVector, y);
+	MatrixMultiplication(y, kal.extractionMatrix, kal.meanVector);
+	MatrixSub(y, kal.measurementVector, y);
 
 	// The Covariance of the move
 	Matrix S;
 	Matrix extTran;
 
-	MultiplyMatrix(S, kal.extractionMatrix, kal.covarianceMatrixX);
+	MatrixMultiplication(S, kal.extractionMatrix, kal.covarianceMatrixX);
 	FindTransposeMatrix(extTran, kal.extractionMatrix);
-	MultiplyMatrix(S, S, extTran);
-	AddMatrix(S, S, kal.covarianceMatrixZ);
+	MatrixMultiplication(S, S, extTran);
+	MatrixAdd(S, S, kal.covarianceMatrixZ);
 
 	// Kalman Gain
 	Matrix K;
 	Matrix Sinv;
 
 	FindInverseMatrix(Sinv, S);
-	MultiplyMatrix(K, kal.covarianceMatrixX, extTran);
-	MultiplyMatrix(K, K, Sinv);
+	MatrixMultiplication(K, kal.covarianceMatrixX, extTran);
+	MatrixMultiplication(K, K, Sinv);
 
 	// Figure out mean and covariance results
 	Matrix x_next;
 	Matrix P_next;
 
-	MultiplyMatrix(x_next, K, y);
-	AddMatrix(x_next, kal.dataVector, x_next);
+	MatrixMultiplication(x_next, K, y);
+	MatrixAdd(x_next, kal.meanVector, x_next);
 
-	MultiplyMatrix(P_next, kal.covarianceMatrixX, extTran);
-	MultiplyMatrix(P_next, P_next, Sinv);
-	MultiplyMatrix(P_next, P_next, kal.extractionMatrix);
-	MultiplyMatrix(P_next, P_next, kal.covarianceMatrixX);
+	MatrixMultiplication(P_next, kal.covarianceMatrixX, extTran);
+	MatrixMultiplication(P_next, P_next, Sinv);
+	MatrixMultiplication(P_next, P_next, kal.extractionMatrix);
+	MatrixMultiplication(P_next, P_next, kal.covarianceMatrixX);
 
-	SubMatrix(P_next, kal.covarianceMatrixX, P_next);
+	MatrixSub(P_next, kal.covarianceMatrixX, P_next);
 
 	// Copy results to the kalmanfilter class
-	CopyMatrixByValue(kal.dataVector, x_next);
+	CopyMatrixByValue(kal.meanVector, x_next);
 	CopyMatrixByValue(kal.covarianceMatrixX, P_next);
 
+	// Delete matricies so we don't have memory leaks..
 	DeleteMatrix(y);
 	DeleteMatrix(S);
 	DeleteMatrix(extTran);

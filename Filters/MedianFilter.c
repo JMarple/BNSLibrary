@@ -1,16 +1,20 @@
 #pragma systemFile
 
+// Simple Median Filter structure for keeping track
+//  of data
 struct MedianFilter
 {
 	Matrix data;
 };
 
+// Initialize the filter's data vector
 void MedianInitialize(MedianFilter filter, int size)
 {
 	DeleteMatrix(filter.data);
 	CreateZerosMatrix(filter.data, size, 1);
 }
 
+// Add data to the filter, push the oldest data out of the vector
 void MedianAddData(MedianFilter filter, float data)
 {
 	for(int i = filter.data.m-1; i > 0; i--)
@@ -19,6 +23,7 @@ void MedianAddData(MedianFilter filter, float data)
 	SetMatrixAt(filter.data, 0, 0, data);
 }
 
+// Compute the median of the given data
 float MedianCompute(MedianFilter filter)
 {
 	Matrix sorted;
@@ -42,7 +47,9 @@ float MedianCompute(MedianFilter filter)
 	int middle = sorted.m / 2;
 	float returnValue = GetMatrixAt(sorted, middle, 0);
 
+	// Prevent Memory Leaks
 	DeleteMatrix(sorted);
 
+	// Return the median
 	return returnValue;
 }

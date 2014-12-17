@@ -51,19 +51,19 @@ task main()
 
 	// Matrix Multiplication
 	Matrix mult;
-	MultiplyMatrix(mult, mat2, mat3);
+	MatrixMultiplication(mult, mat2, mat3);
 	writeDebugStream("Multiply ");
 	PrintMatrix(mult);
 
 	// Matrix Addition
 	Matrix add;
-	AddMatrix(add, mat2, mat3);
+	MatrixAdd(add, mat2, mat3);
 	writeDebugStream("Add ");
 	PrintMatrix(add);
 
 	// Matrix Subtraction
 	Matrix sub;
-	SubMatrix(sub, mat3, mat2);
+	MatrixSub(sub, mat3, mat2);
 	writeDebugStream("Subtract ");
 	PrintMatrix(sub);
 }

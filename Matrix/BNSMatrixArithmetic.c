@@ -1,7 +1,7 @@
 #pragma systemFile
 
 // Multiply Matricies as AB, saving to dst
-bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B)
+bool MatrixMultiplication(Matrix dst, Matrix A, Matrix B)
 {
 	if(A.n != B.m)
 	{
@@ -83,7 +83,7 @@ int GetLargestColumnFromMatrix(Matrix A, int col, int row1, int row2)
 }
 
 // Add Matricies together A+B
-bool AddMatrix(Matrix dst, Matrix A, Matrix B)
+bool MatrixAdd(Matrix dst, Matrix A, Matrix B)
 {
 	if(A.m != B.m || A.n != B.n)
 	{
@@ -110,7 +110,7 @@ bool AddMatrix(Matrix dst, Matrix A, Matrix B)
 }
 
 // Subtract Matricies together A-B
-bool SubMatrix(Matrix dst, Matrix A, Matrix B)
+bool MatrixSub(Matrix dst, Matrix A, Matrix B)
 {
 	if(A.m != B.m || A.n != B.n)
 	{
@@ -135,6 +135,7 @@ bool SubMatrix(Matrix dst, Matrix A, Matrix B)
 	return true;
 }
 
+// Returns the determinant of Matrix A
 float FindMatrixDeterminant(Matrix A)
 {
 	// Ensure this is a square matrix
@@ -186,6 +187,7 @@ float FindMatrixDeterminant(Matrix A)
 	return 0;
 }
 
+// Returns the sum of the main diagonal
 float FindMatrixTrace(Matrix A)
 {
 	// Ensure this is a square matrix
@@ -205,6 +207,7 @@ float FindMatrixTrace(Matrix A)
 	return trace;
 }
 
+// Returns a new matrix of minors
 bool FindMatrixOfMinors(Matrix dst, Matrix A)
 {
 	// Ensure this is a square matrix

@@ -1,5 +1,6 @@
 #pragma systemFile
 
+// Obtain space for a matrix filled with all zeros
 void CreateZerosMatrix(Matrix mat, int m, int n)
 {
 	// Dimensions
@@ -8,18 +9,22 @@ void CreateZerosMatrix(Matrix mat, int m, int n)
 	mat.inUse = true;
 	mat.bufferLocation = bnsMalloc(m*n);
 
+	// Initalize to all zeros
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++)
 			SetMatrixAt(mat, i, j, 0);
 }
 
+// Obtain space for an identity matrix of size n
 void CreateIdentityMatrix(Matrix mat, int n)
 {
+	// Dimensions
 	mat.m = n;
 	mat.n = n;
 	mat.inUse = true;
 	mat.bufferLocation = bnsMalloc(n*n);
 
+	// Initialize with 1's on the main diagonal
 	for(int i = 0; i < n; i++)
 	{
 		for(int j = 0; j < n; j++)
@@ -32,6 +37,9 @@ void CreateIdentityMatrix(Matrix mat, int n)
 	}
 }
 
+// This function takes in a string input and determines
+//   how many rows and columns the user wants to have
+//   ';' means a new row, spaces means new column
 bool ParseMatrixString(Matrix mat, char* s)
 {
 	// Index/counters
@@ -102,6 +110,7 @@ bool ParseMatrixString(Matrix mat, char* s)
 	return true;
 }
 
+// Obtain space for a matrix given a string as an input
 bool CreateMatrix(Matrix mat, char* s)
 {
 	char* cpy = s;
@@ -112,6 +121,7 @@ bool CreateMatrix(Matrix mat, char* s)
 
 	int sIndex = 0;
 
+	// Fill empty matrix with the information
 	for(int i = 0; i < mat.m; i++)
 	{
 		for(int j = 0; j < mat.n; j++)
@@ -145,6 +155,7 @@ bool CreateMatrix(Matrix mat, char* s)
 	return true;
 }
 
+// Free space given a matrix
 void DeleteMatrix(Matrix mat)
 {
 	mat.m = 0;
@@ -156,6 +167,8 @@ void DeleteMatrix(Matrix mat)
 	}
 }
 
+// Get a copy of a matrix by allocating new space and
+//   directly copying all values to the new matrix
 bool CopyMatrixByValue(Matrix dst, Matrix src)
 {
 	DeleteMatrix(dst);
@@ -175,6 +188,8 @@ bool CopyMatrixByValue(Matrix dst, Matrix src)
 	return true;
 }
 
+// Get a copy of a matrix by getting a reference to
+//  the original data
 bool CopyMatrix(Matrix dst, Matrix src)
 {
 	dst.m = src.m;
@@ -184,19 +199,22 @@ bool CopyMatrix(Matrix dst, Matrix src)
 	return true;
 }
 
+// Set an element in a matrix, given m-down and n-across
 void SetMatrixAt(Matrix mat, int m, int n, float value)
 {
 	if(m <= mat.m && n <= mat.n)
 	{
-		setBufferElement(mat.bufferLocation + mat.n * m + n, value);
+		bnsSetHeapElement(mat.bufferLocation + mat.n * m + n, value);
 	}
 }
 
+// Get an element in a matrix given m-down and n-across
 float GetMatrixAt(Matrix mat, int m, int n)
 {
-	return getBufferElement(mat.bufferLocation + mat.n * m + n);
+	return bnsGetHeapElement(mat.bufferLocation + mat.n * m + n);
 }
 
+// Print a Matrix to the console
 void PrintMatrix(Matrix A)
 {
 	if(A.inUse == true)

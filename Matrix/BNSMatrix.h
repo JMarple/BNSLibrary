@@ -67,25 +67,21 @@ void SetMatrixAt(Matrix mat, int m, int n, float value);
 // m is the row, n is the column
 float GetMatrixAt(Matrix mat, int m, int n);
 
-// MultiplyMatrix(...)
+// MatrixMultiplication(...)
 // Multiply A*B and returns to dst.
-// Note: dst MUST be a different matrix from A and B
-bool MultiplyMatrix(Matrix dst, Matrix A, Matrix B);
+bool MatrixMultiplication(Matrix dst, Matrix A, Matrix B);
 
 // FindInverseMatrix(...)
 // Finds A^-1 and returns it to dst
-// Note: dst MUST be a different matrix from A
 bool FindInverseMatrix(Matrix dst, Matrix A);
 
-// AddMatrix(...)
+// MatrixAdd(...)
 // Adds A + B and returns the result to dst
-// Note: dst CAN be A or B without conflict
-bool AddMatrix(Matrix dst, Matrix A, Matrix B);
+bool MatrixAdd(Matrix dst, Matrix A, Matrix B);
 
-// SubMatrix(...)
+// MatrixSub(...)
 // Subtracts A - B and returns the result to dst
-// Note: dst CAN be A or B without conflict
-bool SubMatrix(Matrix dst, Matrix A, Matrix B);
+bool MatrixSub(Matrix dst, Matrix A, Matrix B);
 
 // FindTransposeMatrix(...)
 // Returns the transpose of A to dst

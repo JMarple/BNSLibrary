@@ -1,13 +1,16 @@
 #pragma systemFile
 
-bool bnsIsProtected(int space);
-
-float getBufferElement(int element)
+// Returns an element in the buffer
+float bnsGetHeapElement(int element)
 {
+	// Since our "0" element marks the size
+  //  of the chunk size, we have to increment
+  //  by one to get the real data that starts at "1"
 	return bnsHeap[element+1];
 }
 
-bool setBufferElement(int element, float value)
+// Sets an element in the heap
+bool bnsSetHeapElement(int element, float value)
 {
 	if(element < sizeof(bnsHeap) / sizeof(bnsHeap[0]))
 	{
@@ -23,17 +26,19 @@ bool setBufferElement(int element, float value)
 	return false;
 }
 
+// Start the memory with 1 chunk that spans the whole heap
 void initMemory()
 {
 	bnsHeap[0] = (int)(sizeof(bnsHeap) / sizeof(bnsHeap[0]) | (1 << MEM_PROT_BIT));
 }
 
-bool bnsIsFree(int space)
+// Checks if the "free" bit is set at a memory location
+bool bnsIsFree(int loc)
 {
-	if(space >= sizeof(bnsHeap) / sizeof(bnsHeap[0]))
+	if(loc >= sizeof(bnsHeap) / sizeof(bnsHeap[0]))
 		return false;
 
-	return !(((int)bnsHeap[space] >> MEM_FREE_BIT)&0x01);
+	return !(((int)bnsHeap[loc] >> MEM_FREE_BIT)&0x01);
 }
 
 bool bnsIsProtected(int space)
@@ -44,14 +49,18 @@ bool bnsIsProtected(int space)
 	return (bool)(((int)bnsHeap[space] >> MEM_PROT_BIT)&0x01);
 }
 
-int bnsGetData(int space)
+// Returns data a memory location with the free
+//  and protection bits removed
+int bnsGetData(int loc)
 {
-	int data = (int)(bnsHeap[space]);
+	int data = (int)(bnsHeap[loc]);
 	data &= ~(1 << (MEM_FREE_BIT));
 	data &= ~(1 << (MEM_PROT_BIT));
 	return data;
 }
 
+// Defrag our heap by finding free chunks that can be combined
+//   into larger free chunks
 void bnsDefrag()
 {
 	int memloc = 0;
@@ -78,22 +87,26 @@ void bnsDefrag()
 	}
 }
 
-void bnsFree(int space)
+// Free memory at a certain location
+void bnsFree(int loc)
 {
-	if(space < 0 || space > sizeof(bnsHeap)/sizeof(bnsHeap[0]))
+	if(loc < 0 || loc > sizeof(bnsHeap)/sizeof(bnsHeap[0]))
 		return;
 
-	int x = bnsHeap[space];
+	// Add free bit at the memory location
+	int x = bnsHeap[loc];
 	x = x & ~(1 << MEM_FREE_BIT);
-	bnsHeap[space] = x;
+	bnsHeap[loc] = x;
 
 	// Erase information (could be slow.. might want to remove this)
 	//for(int i = space+1; i < space+bnsGetData(space); i++)
 		//bnsHeap[i] = 0;
 
+	// Could be slow, but guarentees we have largest possible chunk sizes
 	bnsDefrag();
 }
 
+// Try to allocate space in the BNS Heap
 int bnsMalloc(int size)
 {
 	int memloc = 0;
@@ -121,18 +134,19 @@ int bnsMalloc(int size)
 			// Return null if no suitable space was found!
 			if(memloc >= sizeof(bnsHeap) / sizeof(bnsHeap[0]))
 			{
-				writeDebugStreamLine("***\nBNS MATRIX ERROR\nNot enough memory for chunk size %d\n***\n", size);
+				writeDebugStreamLine("***\nBNS HEAP ERROR\nNot enough memory for chunk size %d\n***\n", size);
 				return -1;
 			}
 		}
 	}
 }
 
-void bnsPrintMemory(int s, int e)
+// Print Heap Memory
+void bnsPrintMemory(int startPos, int endPos)
 {
-	for(int i = s; i < e; i++)
+	for(int i = startPos; i < endPos; i++)
 	{
-		if((i-s)%4 == 0)
+		if((i-startPos)%4 == 0)
 			writeDebugStreamLine("");
 
 		if(bnsIsFree(i) && bnsIsProtected(i))
@@ -147,6 +161,7 @@ void bnsPrintMemory(int s, int e)
 	writeDebugStreamLine("");
 }
 
+// Print Heap Report (good for finding memory leaks)
 void bnsPrintMemoryDetails()
 {
 	writeDebugStreamLine("BNS Memory Allocation: ");

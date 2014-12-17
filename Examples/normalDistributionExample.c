@@ -34,7 +34,11 @@ task main()
 	Matrix cov;
 	CreateMatrix(cov, "0.1 0 0; 0 0.1 0; 0 0 0.1;");
 
-	// Print Result of the PDF
-	float result = MultivariateNormalDistribution(data, mean, cov);
-	writeDebugStreamLine("Dist = %f", result);
+	// Setup our gaussian
+	Gaussian gau;
+	GaussianInit(gau, mean, cov);
+
+	// Print Result of the PDF function
+	float result = GaussianPDF(gau, data);
+	writeDebugStreamLine("Result = %f", result);
 }
