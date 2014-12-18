@@ -1,3 +1,27 @@
+// Gaussian.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements Gaussian distributions for use in 
+// Vex Robotics Competition.  These are used for
+// many probabilist algorithms and can tell you
+// certainty of a certain measurement
+//
+// Source Code:
+//   Gaussian.c
+//
+// Dependencies:
+//    BNSMatrix.h
+
+#pragma systemFile
+
+#ifndef __BNS_MATRIX_H
+  #include "../Matrix/BNSMatrix.h"
+#endif
+
 #pragma systemFile
 
 // Function Prototype

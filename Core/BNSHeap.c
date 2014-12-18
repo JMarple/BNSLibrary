@@ -1,4 +1,26 @@
+// BNSHeap.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements a memory heap for use in 
+// Vex Robotics Competition.  These operations
+// include:
+//  - bnsMalloc
+//  - bnsFree
+//  - bnsGetHeapElement
+//  - bnsSetHeapElement
+// 
+// Dependencies:
+//    BNSHeap.h.h
+
 #pragma systemFile
+
+#ifndef __BNS_HEAP_H
+  #include "BNSHeap.h"
+#endif
 
 // Returns an element in the buffer
 float bnsGetHeapElement(int element)

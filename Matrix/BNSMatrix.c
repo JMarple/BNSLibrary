@@ -1,4 +1,31 @@
+// BNSMatrix.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements a Matrix operations for use in 
+// Vex Robotics Competition.  These operations
+// include:
+//  - CreateZerosMatrix
+//  - CreateMatrix
+//  - CreateIdentityMatrix
+//  - DeleteMatrix
+//  - CopyMatrix
+//  - CopyMatrixByValue
+//  - SetMatrixAt
+//  - GetMatrixAt
+//  - PrintMatrix
+// 
+// Dependencies:
+//    BNSMatrix.h
+
 #pragma systemFile
+
+#ifndef __BNS_MATRIX_H
+  #include "BNSMatrix.h"
+#endif
 
 // Obtain space for a matrix filled with all zeros
 void CreateZerosMatrix(Matrix mat, int m, int n)

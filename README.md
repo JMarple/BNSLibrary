@@ -15,6 +15,8 @@ Matrix Basics:
  - SetMatrixAt(...)
  - GetMatrixAt(...)
  - DeleteMatrix(...)
+ - CopyMatrix(...)
+ - CopyMatrixByValue(...)
  
 Matrix Arithmetic
  - MatrixAdd(...)

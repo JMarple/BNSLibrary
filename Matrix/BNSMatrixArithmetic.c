@@ -1,4 +1,29 @@
+// BNSMatrixArithmetic.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements a Matrix operations for use in 
+// Vex Robotics Competition.  These operations
+// include:
+//  - MatrixAdd
+//  - MatrisSub
+//  - MatrixMult
+//  - MatrixInv
+//  - MatrixDeterminant
+//  - MatrixTranspose
+//  - MatrixTrace
+// 
+// Dependencies:
+//    BNSMatrix.h
+
 #pragma systemFile
+
+#ifndef __BNS_MATRIX_H
+  #include "BNSMatrix.h"
+#endif
 
 // Multiply Matricies as AB, saving to dst
 bool MatrixMult(Matrix dst, Matrix A, Matrix B)

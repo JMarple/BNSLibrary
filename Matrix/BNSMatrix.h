@@ -26,6 +26,10 @@
 #ifndef __BNS_MATRIX_H
 #define __BNS_MATRIX_H
 
+#ifndef __BNS_HEAP_H
+  #include "../Core/BNSHeap.h"
+#endif
+
 struct Matrix
 {
 	// Number of rows

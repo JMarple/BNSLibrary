@@ -1,4 +1,28 @@
+// MedianFilter.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements a MedianFilter for use in 
+// Vex Robotics Competition.  What median filters
+// do is take a set of data and determines the 
+// median of it.  This allows for spantenous noise
+// that would otherwise negatively impact the data
+// to be ignored. 
+//
+// Source Code:
+//   MedianFilter.c
+//
+// Dependencies:
+//    BNSMatrix.h
+
 #pragma systemFile
+
+#ifndef __BNS_MATRIX_H
+  #include "../Matrix/BNSMatrix.h"
+#endif
 
 // Simple Median Filter structure for keeping track
 //  of data

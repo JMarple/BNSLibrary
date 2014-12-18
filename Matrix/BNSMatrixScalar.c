@@ -1,4 +1,26 @@
+// BNSMatrixScalar.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements a Matrix operations for use in 
+// Vex Robotics Competition.  These operations
+// include:
+//  - MultiplyScalarToMatrix
+//  - DivideScalarToMatrix
+//  - VectorMagnitude
+//
+// Dependencies:
+//    BNSMatrix.h
+
 #pragma systemFile
+
+#ifndef __BNS_MATRIX_H
+  #include "BNSMatrix.h"
+#endif
+
 
 void MultiplyScalarToMatrix(Matrix mat, float scalar)
 {

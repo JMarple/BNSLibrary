@@ -1,4 +1,28 @@
+// KalmanFilter.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 12/18/2014
+//
+// This source file includes source code that
+// implements a KalmanFilter for use in 
+// Vex Robotics Competition.  There is some 
+// explanation about how the kalman filter works
+// in the examples folder, however some previous
+// experience/intuition may be necessary to  
+// succesfully integrate it.  
+//
+// Source Code:
+//   KalmanFilter.c
+//
+// Dependencies:
+//    BNSMatrix.h
+
 #pragma systemFile
+
+#ifndef __BNS_MATRIX_H
+  #include "../Matrix/BNSMatrix.h"
+#endif
 
 struct KalmanFilter
 {
