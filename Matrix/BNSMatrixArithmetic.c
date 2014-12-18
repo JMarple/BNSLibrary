@@ -1,7 +1,7 @@
 #pragma systemFile
 
 // Multiply Matricies as AB, saving to dst
-bool MatrixMultiplication(Matrix dst, Matrix A, Matrix B)
+bool MatrixMult(Matrix dst, Matrix A, Matrix B)
 {
   if(A.n != B.m)
   {
@@ -136,7 +136,7 @@ bool MatrixSub(Matrix dst, Matrix A, Matrix B)
 }
 
 // Returns the determinant of Matrix A
-float FindMatrixDeterminant(Matrix A)
+float MatrixDeterminant(Matrix A)
 {
   // Ensure this is a square matrix
   if(A.m != A.n)
@@ -175,7 +175,7 @@ float FindMatrixDeterminant(Matrix A)
         }
       }
 
-      sumOfDet += multiplier * GetMatrixAt(A, 0, col) * FindMatrixDeterminant(detMat);
+      sumOfDet += multiplier * GetMatrixAt(A, 0, col) * MatrixDeterminant(detMat);
       multiplier *= -1;
     }
 
@@ -188,7 +188,7 @@ float FindMatrixDeterminant(Matrix A)
 }
 
 // Returns the sum of the main diagonal
-float FindMatrixTrace(Matrix A)
+float MatrixTrace(Matrix A)
 {
   // Ensure this is a square matrix
   if(A.m != A.n)
@@ -235,7 +235,7 @@ bool FindMatrixOfMinors(Matrix dst, Matrix A)
         }
         x++;
       }
-      float det = FindMatrixDeterminant(tmp);
+      float det = MatrixDeterminant(tmp);
       SetMatrixAt(dst, j, i, det);
     }
   }
@@ -268,7 +268,7 @@ bool FindCofactorMatrix(Matrix dst, Matrix A)
 }
 
 // Only works for square matricies and vectors atm
-void FindTransposeMatrix(Matrix dst, Matrix A)
+void MatrixTranspose(Matrix dst, Matrix A)
 {
   Matrix tmpDst;
   CreateZerosMatrix(tmpDst, A.n, A.m);
@@ -288,7 +288,7 @@ void FindTransposeMatrix(Matrix dst, Matrix A)
   DeleteMatrix(tmpDst);
 }
 
-bool FindInverseMatrix(Matrix dst, Matrix A)
+bool MatrixInv(Matrix dst, Matrix A)
 {
   // Ensure this is a square matrix
   if(A.m != A.n)
@@ -301,9 +301,9 @@ bool FindInverseMatrix(Matrix dst, Matrix A)
 
   FindCofactorMatrix(dstTmp, A);
 
-  FindTransposeMatrix(dstTmp, dstTmp);
+  MatrixTranspose(dstTmp, dstTmp);
 
-  float det = FindMatrixDeterminant(A);
+  float det = MatrixDeterminant(A);
 
   if(det == 0)
     realResult = false;

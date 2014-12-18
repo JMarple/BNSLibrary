@@ -25,7 +25,7 @@ struct KalmanFilter
 };
 
 // Kalman filter initilizations
-void KalmanInitialize(KalmanFilter kal, int variables, int measurements,
+void KalmanInit(KalmanFilter kal, int variables, int measurements,
                       Matrix updateMatrix,
                       Matrix extractionMatrix,
                       Matrix covarianceMatrixX,
@@ -54,13 +54,13 @@ void KalmanPredict(KalmanFilter kal)
   Matrix F_trans;
 
   // Calculate x_next (update guassian mean)
-  MatrixMultiplication(x_next, kal.updateMatrix, kal.meanVector);
+  MatrixMult(x_next, kal.updateMatrix, kal.meanVector);
   MatrixAdd(x_next, x_next, kal.moveVector);
 
   // Calculate p_next (update guassian covariance);
-  MatrixMultiplication(P_next, kal.updateMatrix, kal.covarianceMatrixX);
-  FindTransposeMatrix(F_trans, kal.updateMatrix);
-  MatrixMultiplication(P_next, P_next, F_trans);
+  MatrixMult(P_next, kal.updateMatrix, kal.covarianceMatrixX);
+  MatrixTranspose(F_trans, kal.updateMatrix);
+  MatrixMult(P_next, P_next, F_trans);
 
   // Copy results to the kalmanfilter class
   CopyMatrixByValue(kal.meanVector, x_next);
@@ -82,37 +82,37 @@ void KalmanUpdate(KalmanFilter kal, Matrix meas)
   // Find the difference between the move (measurement)
   //   and what we predicted (extraction * data)
   Matrix y;
-  MatrixMultiplication(y, kal.extractionMatrix, kal.meanVector);
+  MatrixMult(y, kal.extractionMatrix, kal.meanVector);
   MatrixSub(y, kal.measurementVector, y);
 
   // The Covariance of the move
   Matrix S;
   Matrix extTran;
 
-  MatrixMultiplication(S, kal.extractionMatrix, kal.covarianceMatrixX);
-  FindTransposeMatrix(extTran, kal.extractionMatrix);
-  MatrixMultiplication(S, S, extTran);
+  MatrixMult(S, kal.extractionMatrix, kal.covarianceMatrixX);
+  MatrixTranspose(extTran, kal.extractionMatrix);
+  MatrixMult(S, S, extTran);
   MatrixAdd(S, S, kal.covarianceMatrixZ);
 
   // Kalman Gain
   Matrix K;
   Matrix Sinv;
 
-  FindInverseMatrix(Sinv, S);
-  MatrixMultiplication(K, kal.covarianceMatrixX, extTran);
-  MatrixMultiplication(K, K, Sinv);
+  MatrixInv(Sinv, S);
+  MatrixMult(K, kal.covarianceMatrixX, extTran);
+  MatrixMult(K, K, Sinv);
 
   // Figure out mean and covariance results
   Matrix x_next;
   Matrix P_next;
 
-  MatrixMultiplication(x_next, K, y);
+  MatrixMult(x_next, K, y);
   MatrixAdd(x_next, kal.meanVector, x_next);
 
-  MatrixMultiplication(P_next, kal.covarianceMatrixX, extTran);
-  MatrixMultiplication(P_next, P_next, Sinv);
-  MatrixMultiplication(P_next, P_next, kal.extractionMatrix);
-  MatrixMultiplication(P_next, P_next, kal.covarianceMatrixX);
+  MatrixMult(P_next, kal.covarianceMatrixX, extTran);
+  MatrixMult(P_next, P_next, Sinv);
+  MatrixMult(P_next, P_next, kal.extractionMatrix);
+  MatrixMult(P_next, P_next, kal.covarianceMatrixX);
 
   MatrixSub(P_next, kal.covarianceMatrixX, P_next);
 

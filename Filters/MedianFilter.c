@@ -8,7 +8,7 @@ struct MedianFilter
 };
 
 // Initialize the filter's data vector
-void MedianInitialize(MedianFilter filter, int size)
+void MedianInit(MedianFilter filter, int size)
 {
   DeleteMatrix(filter.data);
   CreateZerosMatrix(filter.data, size, 1);

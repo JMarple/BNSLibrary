@@ -43,19 +43,19 @@ float FindSquareMahalanobisDistance(Matrix data, Matrix mean, Matrix cov)
   MatrixSub(sub1, data, mean);
 
   // Tranpose vector
-  FindTransposeMatrix(sub1, sub1);
+  MatrixTranspose(sub1, sub1);
 
   // Find inverse, it it doesn't exist, there is an issue!
-  if( !FindInverseMatrix(inverse, cov) )
+  if( !MatrixInv(inverse, cov) )
     return 0;
 
   // Multiply the Tranposed "error" and the inverse of covarience
-  MatrixMultiplication(sub2, sub1, inverse);
+  MatrixMult(sub2, sub1, inverse);
 
   // Go back to original vector
-  FindTransposeMatrix(sub1, sub1);
+  MatrixTranspose(sub1, sub1);
 
-  MatrixMultiplication(result, sub2, sub1);
+  MatrixMult(result, sub2, sub1);
 
   float finalResult = GetMatrixAt(result, 0, 0);
 
@@ -79,7 +79,7 @@ float MultivariateNormalDistribution(Matrix data, Matrix mean, Matrix cov)
 {
   float mahDist = -0.5 * FindSquareMahalanobisDistance(data, mean, cov);
 
-  float normalizer = sqrt( pow(6.28318, data.m) * FindMatrixDeterminant(cov) );
+  float normalizer = sqrt( pow(6.28318, data.m) * MatrixDeterminant(cov) );
 
   return 1 / normalizer * exp(mahDist);
 }

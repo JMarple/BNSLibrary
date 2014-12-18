@@ -98,7 +98,7 @@ task main()
 
   // Create a new kalman filter and input our matricies
   KalmanFilter filter;
-  KalmanInitialize(filter, 4, 2,
+  KalmanInit(filter, 4, 2,
                     updateMatrix,
                     extractionMatrix,
                     covarianceMatrixX,

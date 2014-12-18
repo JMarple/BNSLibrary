@@ -69,11 +69,11 @@ float GetMatrixAt(Matrix mat, int m, int n);
 
 // MatrixMultiplication(...)
 // Multiply A*B and returns to dst.
-bool MatrixMultiplication(Matrix dst, Matrix A, Matrix B);
+bool MatrixMult(Matrix dst, Matrix A, Matrix B);
 
-// FindInverseMatrix(...)
+// MatrixInv(...)
 // Finds A^-1 and returns it to dst
-bool FindInverseMatrix(Matrix dst, Matrix A);
+bool MatrixInv(Matrix dst, Matrix A);
 
 // MatrixAdd(...)
 // Adds A + B and returns the result to dst
@@ -83,17 +83,17 @@ bool MatrixAdd(Matrix dst, Matrix A, Matrix B);
 // Subtracts A - B and returns the result to dst
 bool MatrixSub(Matrix dst, Matrix A, Matrix B);
 
-// FindTransposeMatrix(...)
+// MatrixTranspose(...)
 // Returns the transpose of A to dst
-void FindTransposeMatrix(Matrix dst, Matrix A);
+void MatrixTranspose(Matrix dst, Matrix A);
 
-// FindMatrixDeterminant(...)
+// MatrixDeterminant(...)
 // Returns the determinant of a given nxn matrix
-float FindMatrixDeterminant(Matrix A);
+float MatrixDeterminant(Matrix A);
 
-// FindMatrixTrace(...)
+// MatrixTrace(...)
 // Returns the trace of Matrix A
-float FindMatrixTrace(Matrix A);
+float MatrixTrace(Matrix A);
 
 // MultiplyScalarToMatrix(...)
 // Multiplies each element in a matrix by a given scalar

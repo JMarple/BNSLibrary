@@ -33,7 +33,7 @@ task main()
   //   walls in weird ways, so this noise can be cut out by
   //   taking the median of the data.
   MedianFilter filter;
-  MedianInitialize(filter, 5);
+  MedianInit(filter, 5);
 
   // Add Random Data, with an outcast 100
   MedianAddData(filter, 2);

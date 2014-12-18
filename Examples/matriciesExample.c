@@ -40,18 +40,18 @@ task main()
   // Matrix Examples:
 
   // Matrix determinant
-  float det = FindMatrixDeterminant(mat2);
+  float det = MatrixDeterminant(mat2);
   writeDebugStreamLine("Matrix Det = %f", det);
 
   // Matrix Inverse
   Matrix inv;
-  FindInverseMatrix(inv, mat2);
+  MatrixInv(inv, mat2);
   writeDebugStream("Inverse ");
   PrintMatrix(inv);
 
   // Matrix Multiplication
   Matrix mult;
-  MatrixMultiplication(mult, mat2, mat3);
+  MatrixMult(mult, mat2, mat3);
   writeDebugStream("Multiply ");
   PrintMatrix(mult);
 
