@@ -18,6 +18,9 @@ void BNS()
 
 	// Start random number generation
 	srand(nSysTime);
+
+	// Output version number
+	writeDebugStreamLine("*** Loaded BNSLib V0.10 for RobotC 4.27 ***");
 }
 
 #endif
