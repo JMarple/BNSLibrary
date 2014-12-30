@@ -1,19 +1,22 @@
-// BNSHeap.h
+// MedianFilter.h
 //
 // Author: Justin Marple with Team BNS
 // Contact: jmarple@umass.edu
-// Date: 12/11/2014
+// Date: 12/18/2014
 //
-// This header file includes source code for
-// "dynamically" create matricies through a
-// set buffer size.  The heap is implemented
-// simply,
+// This source file includes source code that
+// implements a MedianFilter for use in
+// Vex Robotics Competition.  What median filters
+// do is take a set of data and determines the
+// median of it.  This allows for spantenous noise
+// that would otherwise negatively impact the data
+// to be ignored.
 //
 // Source Code:
-//   BNSHeap.c
+//   MedianFilter.c
 //
 // Dependencies:
-//   None!
+//    BNSMatrix.h
 //
 // ------------------------------------------------------------------------
 //
@@ -33,30 +36,22 @@
 //
 // ------------------------------------------------------------------------
 
-#ifndef __BNS_HEAP_H
-#define __BNS_HEAP_H
+#ifndef __BNS_MEDIAN_FILTER_H
+#define __BNS_MEDIAN_FILTER_H
 
-// Size of matrix buffer
-#define BUFFER_SIZE 1000
+#ifndef __BNS_MATRIX_H
+#include "..\Matrix\BNSMatrix.h"
+#endif
 
-// Bit that defines if a chunk of space is free or not
-#define MEM_FREE_BIT 20
+// Simple Median Filter structure for keeping track
+//  of data
+struct MedianFilter
+{
+  struct Matrix data;
+};
 
-// Bit that defines if a point in memory defines a
-//  chunk or not.  Don't overwite if it is!
-// Note: This is not currently being used to due to negative numbers
-#define MEM_PROT_BIT 21
-
-// Global variable that matricies call to
-float bnsHeap[BUFFER_SIZE];
-
-void initMemory();
-bool bnsIsFree(int loc);
-int bnsMalloc(int size);
-void bnsFree(int loc);
-void bnsDefrag();
-float bnsGetHeapElement(int element);
-bool bnsSetHeapElement(int element, float value);
-
+void MedianInit(struct MedianFilter *filter, int size);
+void MedianAddData(struct MedianFilter *filter, float data);
+float MedianCompute(struct MedianFilter *filter);
 
 #endif

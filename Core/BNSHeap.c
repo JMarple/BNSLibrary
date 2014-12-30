@@ -5,21 +5,42 @@
 // Date: 12/18/2014
 //
 // This source file includes source code that
-// implements a memory heap for use in 
+// implements a memory heap for use in
 // Vex Robotics Competition.  These operations
 // include:
 //  - bnsMalloc
 //  - bnsFree
 //  - bnsGetHeapElement
 //  - bnsSetHeapElement
-// 
+//
 // Dependencies:
 //    BNSHeap.h.h
+//
+// ------------------------------------------------------------------------
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// The author can be contacted by email at jmarple@umass.edu
+//
+// ------------------------------------------------------------------------
 
 #pragma systemFile
 
+#ifndef __BNS_HEAP_C
+#define __BNS_HEAP_C
+
 #ifndef __BNS_HEAP_H
-  #include "BNSHeap.h"
+#include "BNSHeap.h"
 #endif
 
 // Returns an element in the buffer
@@ -166,7 +187,8 @@ int bnsMalloc(int size)
 // Print Heap Memory
 void bnsPrintMemory(int startPos, int endPos)
 {
-  for(int i = startPos; i < endPos; i++)
+	int i;
+  for(i = startPos; i < endPos; i++)
   {
     if((i-startPos)%4 == 0)
       writeDebugStreamLine("");
@@ -214,3 +236,5 @@ void bnsPrintMemoryDetails()
   writeDebugStreamLine(" -- Free Memory: \t\t\t%d%% (%d / %d)", (float)free*100.0/(float)(heapSize), free, heapSize);
   writeDebugStreamLine("");
 }
+
+#endif

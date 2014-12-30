@@ -5,7 +5,7 @@
 // Date: 12/18/2014
 //
 // This source file includes source code that
-// implements a Matrix operations for use in 
+// implements a Matrix operations for use in
 // Vex Robotics Competition.  These operations
 // include:
 //  - CreateZerosMatrix
@@ -17,44 +17,71 @@
 //  - SetMatrixAt
 //  - GetMatrixAt
 //  - PrintMatrix
-// 
+//
 // Dependencies:
 //    BNSMatrix.h
+//
+// ------------------------------------------------------------------------
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// The author can be contacted by email at jmarple@umass.edu
+//
+// ------------------------------------------------------------------------
 
 #pragma systemFile
 
+#ifndef __BNS_MATRIX_C
+#define __BNS_MATRIX_C
+
 #ifndef __BNS_MATRIX_H
-  #include "BNSMatrix.h"
+#include "BNSMatrix.h"
+#endif
+#ifndef __BNS_HEAP_H
+#include "BNSHeap.h"
 #endif
 
 // Obtain space for a matrix filled with all zeros
-void CreateZerosMatrix(Matrix mat, int m, int n)
+void CreateZerosMatrix(struct Matrix *mat, int m, int n)
 {
+  int i, j;
   // Dimensions
-  mat.m = m;
-  mat.n = n;
-  mat.inUse = true;
-  mat.bufferLocation = bnsMalloc(m*n);
+  mat->m = m;
+  mat->n = n;
+  mat->inUse = true;
+  mat->bufferLocation = bnsMalloc(m*n);
 
   // Initalize to all zeros
-  for(int i = 0; i < m; i++)
-    for(int j = 0; j < n; j++)
+  for(i = 0; i < m; i++)
+    for(j = 0; j < n; j++)
       SetMatrixAt(mat, i, j, 0);
 }
 
 // Obtain space for an identity matrix of size n
-void CreateIdentityMatrix(Matrix mat, int n)
+void CreateIdentityMatrix(struct Matrix* mat, int n)
 {
+  int i, j;
+
   // Dimensions
-  mat.m = n;
-  mat.n = n;
-  mat.inUse = true;
-  mat.bufferLocation = bnsMalloc(n*n);
+  mat->m = n;
+  mat->n = n;
+  mat->inUse = true;
+  mat->bufferLocation = bnsMalloc(n*n);
 
   // Initialize with 1's on the main diagonal
-  for(int i = 0; i < n; i++)
+  for(i = 0; i < n; i++)
   {
-    for(int j = 0; j < n; j++)
+    for(j = 0; j < n; j++)
     {
       if(i==j)
         SetMatrixAt(mat, i, j, 1);
@@ -67,19 +94,23 @@ void CreateIdentityMatrix(Matrix mat, int n)
 // This function takes in a string input and determines
 //   how many rows and columns the user wants to have
 //   ';' means a new row, spaces means new column
-bool ParseMatrixString(Matrix mat, char* s)
+bool ParseMatrixString(struct Matrix* mat, char* s)
 {
+  int i, rows, cols;
+  bool numTrig;
+  char lastRealChar;
+
   // Index/counters
-  int i = 0;
-  int rows = 1;
-  int cols = 0;
+  i = 0;
+  rows = 1;
+  cols = 0;
 
   // This lets us trigger between numbers and non-numbers
   // When this is true, we are looking at a number,
   //   but when it switchs from true to false, we can
   //   increment the col variable to count the amount of nums
-  bool numTrig = false;
-  char lastRealChar = 0;// A crap hack, ignore final ';' if accidently inputted.
+  numTrig = false;
+  lastRealChar = 0;// A crap hack, ignore final ';' if accidently inputted.
 
   // Determine number of rows and columns
   while(s[i] != 0)
@@ -130,15 +161,15 @@ bool ParseMatrixString(Matrix mat, char* s)
   cols /= (int)rows;
 
   // Set Parameters
-  mat.m = rows;
-  mat.n = cols;
-  mat.inUse = true;
-  mat.bufferLocation = bnsMalloc(rows*cols);
+  mat->m = rows;
+  mat->n = cols;
+  mat->inUse = true;
+  mat->bufferLocation = bnsMalloc(rows*cols);
   return true;
 }
 
 // Obtain space for a matrix given a string as an input
-bool CreateMatrix(Matrix mat, char* s)
+bool CreateMatrix(struct Matrix* mat, char* s)
 {
   char* cpy = s;
 
@@ -149,9 +180,9 @@ bool CreateMatrix(Matrix mat, char* s)
   int sIndex = 0;
 
   // Fill empty matrix with the information
-  for(int i = 0; i < mat.m; i++)
+  for(int i = 0; i < mat->m; i++)
   {
-    for(int j = 0; j < mat.n; j++)
+    for(int j = 0; j < mat->n; j++)
     {
       char tmp[16];
       for(int i = 0; i < 16; i++)
@@ -183,32 +214,33 @@ bool CreateMatrix(Matrix mat, char* s)
 }
 
 // Free space given a matrix
-void DeleteMatrix(Matrix mat)
+void DeleteMatrix(struct Matrix *mat)
 {
-  mat.m = 0;
-  mat.n = 0;
-  if(mat.inUse == true)
+  mat->m = 0;
+  mat->n = 0;
+  if(mat->inUse == true)
   {
-    bnsFree(mat.bufferLocation);
-    mat.bufferLocation = -1;
+    bnsFree(mat->bufferLocation);
+    mat->bufferLocation = -1;
   }
 }
 
 // Get a copy of a matrix by allocating new space and
 //   directly copying all values to the new matrix
-bool CopyMatrixByValue(Matrix dst, Matrix src)
+bool CopyMatrixByValue(struct Matrix* dst, struct Matrix src)
 {
+  int i, j;
   DeleteMatrix(dst);
   CreateZerosMatrix(dst, src.m, src.n);
 
-  dst.m = src.m;
-  dst.n = src.n;
+  dst->m = src.m;
+  dst->n = src.n;
 
-  for(int i = 0; i < dst.m; i++)
+  for(i = 0; i < dst->m; i++)
   {
-    for(int j = 0; j < dst.n; j++)
+    for(j = 0; j < dst->n; j++)
     {
-      SetMatrixAt(dst, i, j, GetMatrixAt(src, i, j));
+      SetMatrixAt(dst, i, j, GetMatrixAt(&src, i, j));
     }
   }
 
@@ -217,39 +249,41 @@ bool CopyMatrixByValue(Matrix dst, Matrix src)
 
 // Get a copy of a matrix by getting a reference to
 //  the original data
-bool CopyMatrix(Matrix dst, Matrix src)
+bool CopyMatrix(struct Matrix *dst, struct Matrix src)
 {
-  dst.m = src.m;
-  dst.n = src.n;
-  dst.bufferLocation = src.bufferLocation;
+  dst->m = src.m;
+  dst->n = src.n;
+  dst->bufferLocation = src.bufferLocation;
 
   return true;
 }
 
 // Set an element in a matrix, given m-down and n-across
-void SetMatrixAt(Matrix mat, int m, int n, float value)
+void SetMatrixAt(struct Matrix *mat, int m, int n, float value)
 {
-  if(m <= mat.m && n <= mat.n)
+  if(m <= mat->m && n <= mat->n)
   {
-    bnsSetHeapElement(mat.bufferLocation + mat.n * m + n, value);
+    bnsSetHeapElement(mat->bufferLocation + mat->n * m + n, value);
   }
 }
 
 // Get an element in a matrix given m-down and n-across
-float GetMatrixAt(Matrix mat, int m, int n)
+float GetMatrixAt(struct Matrix *mat, int m, int n)
 {
-  return bnsGetHeapElement(mat.bufferLocation + mat.n * m + n);
+  return bnsGetHeapElement(mat->bufferLocation + mat->n * m + n);
 }
 
 // Print a Matrix to the console
-void PrintMatrix(Matrix A)
+void PrintMatrix(struct Matrix *A)
 {
-  if(A.inUse == true)
+  int i, j;
+
+  if(A->inUse == true)
   {
     writeDebugStream("Matrix:\n");
-    for(int i = 0; i < A.m; i++)
+    for(i = 0; i < A->m; i++)
     {
-      for(int j = 0; j < A.n; j++)
+      for(j = 0; j < A->n; j++)
       {
         writeDebugStream("%f\t", GetMatrixAt(A, i, j));
       }
@@ -261,3 +295,5 @@ void PrintMatrix(Matrix A)
     writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Print an unset or NULL matrix!\n***\n");
   }
 }
+
+#endif

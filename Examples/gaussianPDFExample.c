@@ -19,12 +19,12 @@ task main()
 
   // Our input data
   Matrix data;
-  CreateMatrix(data, "1.1; 10.1; 0");
+  CreateMatrix(&data, "1.1; 10.1; 0");
 
   // Guassian Mean
   // Ie. Where is the guassisan located?
   Matrix mean;
-  CreateMatrix(mean, "1; 10; 0");
+  CreateMatrix(&mean, "1; 10; 0");
 
   // Guassian covariance
   // How "good" is our mean?
@@ -32,7 +32,7 @@ task main()
   // A high number like 1000 means we have little knowledge
   //  of the "true" mean
   Matrix cov;
-  CreateMatrix(cov, "0.1 0 0; 0 0.1 0; 0 0 0.1;");
+  CreateMatrix(&cov, "0.1 0 0; 0 0.1 0; 0 0 0.1;");
 
   // Setup our gaussian
   Gaussian gau;

@@ -1,4 +1,4 @@
-<h2>BNSLib V0.10</h2>
+<h2>BNSLib V0.11</h2>
 This library is designed to be an advanced library for Highschool and University Vex Robotics Teams.  It can be compiled on RobotC 4.27 (older versions may not compile correctly).  The library features several concepts:
  - Dynamic Memory Allocation
  - Complex Matrix Operations (+ - * /, deterimant, trace, and others)
@@ -18,13 +18,13 @@ Matrix Basics:
  - CopyMatrix(...)
  - CopyMatrixByValue(...)
  
-Matrix Arithmetic
+Matrix Arithmetic:
  - MatrixAdd(...)
  - MatrixSub(...)
  - MatrixMult(...)
  - MatrixInv(...)
  
-Matrix Operations
+Matrix Operations:
  - MatrixTranspose(...)
  - MatrixDeterminant(...)
  - MatrixTrace(...)
@@ -42,3 +42,7 @@ Median Filter Basics:
  - MedianInit(...)
  - MedianAddData(...)
  - MedianCompute(...)
+ 
+<br/><h4>Update Log</h4>
+ - V0.10: First release, basic matrix operation and filters implemented
+ - V0.11: Updated for portability with most C compilers

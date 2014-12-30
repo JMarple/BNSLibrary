@@ -5,34 +5,47 @@
 // Date: 12/18/2014
 //
 // This source file includes source code that
-// implements Gaussian distributions for use in 
+// implements Gaussian distributions for use in
 // Vex Robotics Competition.  These are used for
 // many probabilist algorithms and can tell you
-// certainty of a certain measurement
+// certainty of a measurement
 //
 // Source Code:
 //   Gaussian.c
 //
 // Dependencies:
 //    BNSMatrix.h
+//
+// ------------------------------------------------------------------------
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// The author can be contacted by email at jmarple@umass.edu
+//
+// ------------------------------------------------------------------------
+
 
 #pragma systemFile
+
+#ifndef __BNS_GAUSSIAN_C
+#define __BNS_GAUSSIAN_C
 
 #ifndef __BNS_MATRIX_H
-  #include "../Matrix/BNSMatrix.h"
+#include "../Matrix/BNSMatrix.h"
 #endif
-
-#pragma systemFile
-
-// Function Prototype
-float MultivariateNormalDistribution(Matrix data, Matrix mean, Matrix cov);
-
-// Basic Gaussian Structure
-struct Gaussian
-{
-  Matrix mean;
-  Matrix cov;
-};
+#ifndef __BNS_GAUSSIAN_H
+#include "Gaussian.h"
+#endif
 
 // Initialize basic values for a gaussian
 void GaussianInit(Gaussian gau, Matrix mean, Matrix cov)
@@ -107,3 +120,5 @@ float MultivariateNormalDistribution(Matrix data, Matrix mean, Matrix cov)
 
   return 1 / normalizer * exp(mahDist);
 }
+
+#endif
