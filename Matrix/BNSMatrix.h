@@ -71,13 +71,27 @@ void CreateZerosMatrix(struct Matrix *mat, int m, int n);
 
 // CreateIdentityMatrix(...)
 // Creates a unique nxn identity matrix, where the
-//   major digonals will be filled with zeros
+//   major digonals will be filled with ones
 void CreateIdentityMatrix(struct Matrix *mat, int n);
 
 // CreateMatrix(...)
 // Initalizes a matrix given an character input
-// Returns true if
+// Returns true if the input is succesfully parsed
 bool CreateMatrix(struct Matrix *mat, char* s);
+
+// DeleteMatrix(...)
+// Removes a matrix out of the heap
+void DeleteMatrix(struct Matrix *mat);
+
+// CopyMatrix(...)
+// Copies a matrix by copying the heap location,
+//  height, and width. This will not allocate new memory
+bool CopyMatrix(struct Matrix *dst, struct Matrix src);
+
+// CopyMatrixByValue(...)
+// Copies a matrix by allocating new memory and copying values
+//  directly from src to dst.
+bool CopyMatrixByValue(struct Matrix* dst, struct Matrix src);
 
 // SetMatrixAt(...)
 // Sets a specific location in a matrix
@@ -117,12 +131,16 @@ float MatrixDeterminant(struct Matrix *A);
 // Returns the trace of Matrix A
 float MatrixTrace(struct Matrix *A);
 
-// MultiplyScalarToMatrix(...)
+// MatrixMultiplyScalar(...)
 // Multiplies each element in a matrix by a given scalar
-void MultiplyScalarToMatrix(struct Matrix *mat, float scalar);
+void MatrixMultiplyScalar(struct Matrix *mat, float scalar);
 
-// DivideScalarToMatrix(...)
+// MatrixDivideScalar(...)
 // Divides each element in a matrix by a given scalar
-void DivideScalarToMatrix(struct Matrix *mat, float scalar);
+void MatrixDivideScalar(struct Matrix *mat, float scalar);
+
+// PrintMatrix(...)
+// Prints the values of the given matrix
+void PrintMatrix(struct Matrix *A);
 
 #endif

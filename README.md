@@ -1,4 +1,4 @@
-<h2>BNSLib V0.11</h2>
+<h2>BNSLib V0.12</h2>
 This library is designed to be an advanced library for Highschool and University Vex Robotics Teams.  It can be compiled on RobotC 4.27 (older versions may not compile correctly).  The library features several concepts:
  - Dynamic Memory Allocation
  - Complex Matrix Operations (+ - * /, deterimant, trace, and others)
@@ -10,7 +10,7 @@ This library was designed by Justin Marple on Team BNS
 <br/>Contact: jmarple@umass.edu
 <br/><h4>Cheat Sheet</h4>
 Matrix Basics:
- - CreateMatrix           (Matrix *dst, char* input)
+ - CreateMatrix           (Matrix *dst, char *input)
  - CreateZerosMatrix      (Matrix *dst, int height, int width)
  - CreateIdentityMatrix   (Matrix *dst, int height)
  - SetMatrixAt            (Matrix *dst, int height, int width, float value)
@@ -51,4 +51,4 @@ Median Filter Basics:
 <br/><h4>Update Log</h4>
  - V0.10: First release, basic matrix operation and filters implemented
  - V0.11: Updated for portability with most C compilers
- - V0.12: PID controller added
+ - V0.12: PID controller added.  Changed MultiplyScalarToMatrix to MatrixMultiplyScalar

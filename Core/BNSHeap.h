@@ -6,8 +6,7 @@
 //
 // This header file includes source code for
 // "dynamically" create matricies through a
-// set buffer size.  The heap is implemented
-// simply,
+// set buffer size.
 //
 // Source Code:
 //   BNSHeap.c
@@ -47,7 +46,6 @@
 // Note: This is not currently being used to due to negative numbers
 #define MEM_PROT_BIT 21
 
-//
 #ifndef __BNS_LIB_H
 #include "../BNSLib.h"
 #endif
@@ -55,13 +53,35 @@
 // Global variable that matricies call to
 float bnsHeap[BUFFER_SIZE];
 
+// initMemory(...)
+// Set Default values for the heap
 void initMemory();
-bool bnsIsFree(int loc);
-int bnsMalloc(int size);
-void bnsFree(int loc);
-void bnsDefrag();
-float bnsGetHeapElement(int element);
-bool bnsSetHeapElement(int element, float value);
 
+// bnsIsFree(...)
+// Returns true/false if a location contains
+//  free space or not
+bool bnsIsFree(int loc);
+
+// bnsMalloc(...)
+// This allocates space in the heap for use
+int bnsMalloc(int size);
+
+// bnsFree(...)
+// This frees memory that was already taken
+void bnsFree(int loc);
+
+// bnsDefrag(...)
+// This combines consecutive chunks of free memory
+void bnsDefrag();
+
+// bnsGetHeapElement(...)
+// This returns the element at a memory location
+float bnsGetHeapElement(int element);
+
+// bnsSetHeapElement(...)
+// This sets the element at a memory location
+// Note: this is prone to heap corruption if you
+//  write to an incorrect memory location!
+bool bnsSetHeapElement(int element, float value);
 
 #endif

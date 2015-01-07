@@ -56,7 +56,7 @@ void GaussianInit(Gaussian *gau, Matrix mean, Matrix cov)
 // Calculate the probabilty distribution function
 float GaussianPDF(Gaussian *gau, Matrix data)
 {
-  return MultivariateNormalDistribution(*data, gau.mean, gau.cov);
+  return MultivariateNormalDistribution(data, gau->mean, gau->cov);
 }
 
 // Mahalanobis Distance, good for finding distances within a guassian

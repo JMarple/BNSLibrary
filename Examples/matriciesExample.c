@@ -30,7 +30,7 @@ task main()
   // Creates a 3x3 identity matrix, then multiply it by 11
   Matrix mat3;
   CreateIdentityMatrix(&mat3, 3);
-  MultiplyScalarToMatrix(&mat3, 11);
+  MatrixMultiplyScalar(&mat3, 11);
 
   // Print matricies to the debugger console
   PrintMatrix(&mat1);

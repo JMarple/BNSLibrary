@@ -12,9 +12,16 @@
 //  - bnsFree
 //  - bnsGetHeapElement
 //  - bnsSetHeapElement
+// This heap is implemented by setting the size
+// of each "chunk" as the first element.  The
+// data is then every consecutive element in that
+// chunk-size. Traverseing the heap requires you
+// to start from the initial chunk and increase
+// the heap location by the size of that chunk
+// to find the size of th next chunk of memory
 //
 // Dependencies:
-//    BNSHeap.h.h
+//    BNSHeap.h
 //
 // ------------------------------------------------------------------------
 //
@@ -57,11 +64,6 @@ bool bnsSetHeapElement(int element, float value)
 {
   if(element < sizeof(bnsHeap) / sizeof(bnsHeap[0]))
   {
-    // Bug->Negative numbers will contain this bit, ugh
-    // Prevent corrupting heap by overwriting headers
-    //if(bnsIsProtected(element+1))
-      //return false;
-
     bnsHeap[element+1] = value;
     return true;
   }
@@ -141,15 +143,12 @@ void bnsFree(int loc)
   x = x & ~(1 << MEM_FREE_BIT);
   bnsHeap[loc] = x;
 
-  // Erase information (could be slow.. might want to remove this)
-  //for(int i = space+1; i < space+bnsGetData(space); i++)
-    //bnsHeap[i] = 0;
-
   // Could be slow, but guarentees we have largest possible chunk sizes
   bnsDefrag();
 }
 
 // Try to allocate space in the BNS Heap
+//
 int bnsMalloc(int size)
 {
   int memloc = 0;

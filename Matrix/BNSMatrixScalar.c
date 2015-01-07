@@ -42,7 +42,7 @@
 #ifndef __BNS_MATRIX_SCALAR_C
 #define __BNS_MATRIX_SCALAR_C
 
-void MultiplyScalarToMatrix(struct Matrix *mat, float scalar)
+void MatrixMultiplyScalar(struct Matrix *mat, float scalar)
 {
   int i, j;
 
@@ -55,7 +55,7 @@ void MultiplyScalarToMatrix(struct Matrix *mat, float scalar)
   }
 }
 
-void DivideScalarToMatrix(struct Matrix *mat, float scalar)
+void MatrixDivideScalar(struct Matrix *mat, float scalar)
 {
   int i, j;
 
