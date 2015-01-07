@@ -47,6 +47,11 @@
 // Note: This is not currently being used to due to negative numbers
 #define MEM_PROT_BIT 21
 
+//
+#ifndef __BNS_LIB_H
+#include "../BNSLib.h"
+#endif
+
 // Global variable that matricies call to
 float bnsHeap[BUFFER_SIZE];
 

@@ -51,8 +51,18 @@ struct Gaussian
 // Function Prototype
 float MultivariateNormalDistribution(Matrix data, Matrix mean, Matrix cov);
 
-void GaussianInit(Gaussian gau, Matrix mean, Matrix cov);
-float GaussianPDF(Gaussian gau, Matrix data);
+// GaussianInit(...)
+// Initializes the gaussian distribution structure
+void GaussianInit(Gaussian *gau, Matrix mean, Matrix cov);
+
+// GaussianPDF(...)
+// Produces the Probability Distribution Function of a given gaussian
+float GaussianPDF(Gaussian *gau, Matrix data);
+
+// FindMahalanobisDistance(...)
+// Computes the mahalanobis distnance given a mean, covariance, and data point
+// This differs from euclidean distance where the covariance will effect the
+//  actual distance away from a datapoint.
 float FindSquareMahalanobisDistance(Matrix data, Matrix mean, Matrix cov);
 float FindMahalanobisDistance(Matrix data, Matrix mean, Matrix cov);
 

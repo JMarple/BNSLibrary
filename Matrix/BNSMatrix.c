@@ -172,6 +172,8 @@ bool ParseMatrixString(struct Matrix* mat, char* s)
 bool CreateMatrix(struct Matrix* mat, char* s)
 {
   char* cpy = s;
+  int i, j, k, tmpIndex;
+  bool numTrig;
 
   // Parse the given string and save the results to mat
   if(!ParseMatrixString(mat, s))
@@ -180,16 +182,16 @@ bool CreateMatrix(struct Matrix* mat, char* s)
   int sIndex = 0;
 
   // Fill empty matrix with the information
-  for(int i = 0; i < mat->m; i++)
+  for(i = 0; i < mat->m; i++)
   {
-    for(int j = 0; j < mat->n; j++)
+    for(j = 0; j < mat->n; j++)
     {
       char tmp[16];
-      for(int i = 0; i < 16; i++)
-        tmp[i] = 0;
+      for(k = 0; k < 16; k++)
+        tmp[k] = 0;
 
-      int tmpIndex = 0;
-      bool numTrig = false;
+      tmpIndex = 0;
+      numTrig = false;
 
       while(true)
       {
@@ -204,9 +206,8 @@ bool CreateMatrix(struct Matrix* mat, char* s)
 
         sIndex++;
       }
-      string str = "";
-      stringFromChars(str, tmp);
-      SetMatrixAt(mat, i, j, atof(str));
+
+      SetMatrixAt(mat, i, j, atof(tmp));
     }
   }
 

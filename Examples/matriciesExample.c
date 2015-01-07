@@ -19,51 +19,51 @@ task main()
 
   // Create a 3x3 matrix of zeros
   Matrix mat1;
-  CreateZerosMatrix(mat1, 3, 3);
+  CreateZerosMatrix(&mat1, 3, 3);
 
   // Create a 3x3 matrix with some data in it
   // Set location 1 down, 0 across, to be 16
   Matrix mat2;
-  CreateMatrix(mat2, "1.10 3.40 0; 5 3 2; 0 1 1.234");
-  SetMatrixAt(mat2, 1, 0, 16);
+  CreateMatrix(&mat2, "1.10 3.40 0; 5 3 2; 0 1 1.234");
+  SetMatrixAt(&mat2, 1, 0, 16);
 
   // Creates a 3x3 identity matrix, then multiply it by 11
   Matrix mat3;
-  CreateIdentityMatrix(mat3, 3);
-  MultiplyScalarToMatrix(mat3, 11);
+  CreateIdentityMatrix(&mat3, 3);
+  MultiplyScalarToMatrix(&mat3, 11);
 
   // Print matricies to the debugger console
-  PrintMatrix(mat1);
-  PrintMatrix(mat2);
-  PrintMatrix(mat3);
+  PrintMatrix(&mat1);
+  PrintMatrix(&mat2);
+  PrintMatrix(&mat3);
 
   // Matrix Examples:
 
   // Matrix determinant
-  float det = MatrixDeterminant(mat2);
+  float det = MatrixDeterminant(&mat2);
   writeDebugStreamLine("Matrix Det = %f", det);
 
   // Matrix Inverse
   Matrix inv;
-  MatrixInv(inv, mat2);
+  MatrixInv(&inv, mat2);
   writeDebugStream("Inverse ");
-  PrintMatrix(inv);
+  PrintMatrix(&inv);
 
   // Matrix Multiplication
   Matrix mult;
-  MatrixMult(mult, mat2, mat3);
+  MatrixMult(&mult, mat2, mat3);
   writeDebugStream("Multiply ");
   PrintMatrix(mult);
 
   // Matrix Addition
   Matrix add;
-  MatrixAdd(add, mat2, mat3);
+  MatrixAdd(&add, mat2, mat3);
   writeDebugStream("Add ");
-  PrintMatrix(add);
+  PrintMatrix(&add);
 
   // Matrix Subtraction
   Matrix sub;
-  MatrixSub(sub, mat3, mat2);
+  MatrixSub(&sub, mat3, mat2);
   writeDebugStream("Subtract ");
-  PrintMatrix(sub);
+  PrintMatrix(&sub);
 }

@@ -4,45 +4,51 @@ This library is designed to be an advanced library for Highschool and University
  - Complex Matrix Operations (+ - * /, deterimant, trace, and others)
  - Gaussian Distribution Functions
  - Kalman Filter and Median Filter (more to come)
+ - PID Controllers
   
 This library was designed by Justin Marple on Team BNS
 <br/>Contact: jmarple@umass.edu
 <br/><h4>Cheat Sheet</h4>
 Matrix Basics:
- - CreateMatrix(...)
- - CreateZerosMatrix(...)
- - CreateIdentityMatrix(...)
- - SetMatrixAt(...)
- - GetMatrixAt(...)
- - DeleteMatrix(...)
- - CopyMatrix(...)
- - CopyMatrixByValue(...)
+ - CreateMatrix           (Matrix *dst, char* input)
+ - CreateZerosMatrix      (Matrix *dst, int height, int width)
+ - CreateIdentityMatrix   (Matrix *dst, int height)
+ - SetMatrixAt            (Matrix *dst, int height, int width, float value)
+ - GetMatrixAt            (Matrix *dst, int height, int width)
+ - DeleteMatrix           (Matrix *dst)
+ - CopyMatrix             (Matrix *dst, Matrix src)
+ - CopyMatrixByValue      (Matrix *dst, Matrix src)
  
 Matrix Arithmetic:
- - MatrixAdd(...)
- - MatrixSub(...)
- - MatrixMult(...)
- - MatrixInv(...)
+ - MatrixAdd              (Matrix *dst, Matrix A, Matrix B)
+ - MatrixSub              (Matrix *dst, Matrix A, Matrix B)
+ - MatrixMult             (Matrix *dst, Matrix A, Matrix B)
+ - MatrixInv              (Matirx *dst, Matrix A)
  
 Matrix Operations:
- - MatrixTranspose(...)
- - MatrixDeterminant(...)
- - MatrixTrace(...)
+ - MatrixTranspose        (Matrix *dst, Matrix A)
+ - MatrixDeterminant      (Matrix *src)
+ - MatrixTrace            (Matrix *src)
+ 
+PID Basics:
+ - PIDInit                (PID *controller, float kP, float kI, float kD)
+ - PIDCompute             (PID *controller, float error)
 
 Gaussian Distribution Basics:
- - GaussianInit(...)
- - GaussianPDF(...)
+ - GaussianInit           (Gaussian *gau, Matrix mean, Matrix covariance)
+ - GaussianPDF            (Gaussian *gau, Matrix data)
  
 Kalman Filter Basics:
- - KalmanInit(...)
- - KalmanPredict(...)
- - KalmanUpdate(...)
+ - KalmanInit             (KalmanFilter *kal, int variables, int measurements, [...])
+ - KalmanPredict          (KalmanFilter *kal)
+ - KalmanUpdate           (KalmanFilter *kal, Matrix measurement)
  
 Median Filter Basics:
- - MedianInit(...)
- - MedianAddData(...)
- - MedianCompute(...)
+ - MedianInit             (MedianFilter *filter, float size)
+ - MedianAddData          (MedianFilter *filter, float data)
+ - MedianCompute          (MedianFilter *filter)
  
 <br/><h4>Update Log</h4>
  - V0.10: First release, basic matrix operation and filters implemented
  - V0.11: Updated for portability with most C compilers
+ - V0.12: PID controller added

@@ -10,9 +10,6 @@
 // many probabilist algorithms and can tell you
 // certainty of a measurement
 //
-// Source Code:
-//   Gaussian.c
-//
 // Dependencies:
 //    BNSMatrix.h
 //
@@ -48,18 +45,18 @@
 #endif
 
 // Initialize basic values for a gaussian
-void GaussianInit(Gaussian gau, Matrix mean, Matrix cov)
+void GaussianInit(Gaussian *gau, Matrix mean, Matrix cov)
 {
-  DeleteMatrix(gau.mean);
-  DeleteMatrix(gau.cov);
-  CopyMatrixByValue(gau.mean, mean);
-  CopyMatrixByValue(gau.cov, cov);
+  DeleteMatrix(&gau->mean);
+  DeleteMatrix(&gau->cov);
+  CopyMatrixByValue(&gau->mean, mean);
+  CopyMatrixByValue(&gau->cov, cov);
 }
 
 // Calculate the probabilty distribution function
-float GaussianPDF(Gaussian gau, Matrix data)
+float GaussianPDF(Gaussian *gau, Matrix data)
 {
-  return MultivariateNormalDistribution(data, gau.mean, gau.cov);
+  return MultivariateNormalDistribution(*data, gau.mean, gau.cov);
 }
 
 // Mahalanobis Distance, good for finding distances within a guassian

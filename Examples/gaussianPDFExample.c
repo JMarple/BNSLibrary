@@ -39,6 +39,7 @@ task main()
   GaussianInit(gau, mean, cov);
 
   // Print Result of the PDF function
+  // Expected to be 1.816775
   float result = GaussianPDF(gau, data);
   writeDebugStreamLine("Result = %f", result);
 }

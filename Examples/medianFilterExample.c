@@ -33,29 +33,29 @@ task main()
   //   walls in weird ways, so this noise can be cut out by
   //   taking the median of the data.
   MedianFilter filter;
-  MedianInit(filter, 5);
+  MedianInit(&filter, 5);
 
   // Add Random Data, with an outcast 100
-  MedianAddData(filter, 2);
-  MedianAddData(filter, 5);
-  MedianAddData(filter, 100);
-  MedianAddData(filter, 2);
-  MedianAddData(filter, 4.5);
+  MedianAddData(&filter, 2);
+  MedianAddData(&filter, 5);
+  MedianAddData(&filter, 100);
+  MedianAddData(&filter, 2);
+  MedianAddData(&filter, 4.5);
 
   // Compute Median Filter, where we have
   // 2  2  4.5  5  100
   // so our median is 4.5
-  float result = MedianCompute(filter);
+  float result = MedianCompute(&filter);
   writeDebugStreamLine("%f", result);
 
   // Add Random Data, with an outcast of 1000
-  MedianAddData(filter, 1000);
-  MedianAddData(filter, 8);
-  MedianAddData(filter, 4.789);
+  MedianAddData(&filter, 1000);
+  MedianAddData(&filter, 8);
+  MedianAddData(&filter, 4.789);
 
   // Compute Median Filter, where we have
   // 2  4.5  4.789  8  1000
   // so our median is 4.789
-  result = MedianCompute(filter);
+  result = MedianCompute(&filter);
   writeDebugStreamLine("%f", result);
 }

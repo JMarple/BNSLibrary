@@ -46,6 +46,7 @@
 	#include "Matrix\BNSMatrix.c"
 	#include "Matrix\BNSMatrixArithmetic.c"
 	#include "Matrix\BNSMatrixScalar.c"
+  #include "Filters\PIDController.c"
 
 	// Features
 	#include "Probability\Gaussian.c"
@@ -56,6 +57,7 @@
 
 	#include <stdbool.h>
 	#include <stdio.h>
+  #include <stdlib.h>
 	#include <time.h>
 
 	// Rename several functions for the GCC compiler to interupt
