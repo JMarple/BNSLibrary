@@ -30,7 +30,7 @@
 
 // Compilers (make a new instance for your specific use case)
 #define cROBOTC 0
-#define cGCC		1
+#define cGCC    1
 
 // --------------------------
 // Set which compiler to use
@@ -40,35 +40,35 @@
 // ROBOTC compiling
 #if COMPILER == cROBOTC
 
-	// Core
-	#include "Core\BNSHeap.c"
-	#include "Core\BNSCore.c"
-	#include "Matrix\BNSMatrix.c"
-	#include "Matrix\BNSMatrixArithmetic.c"
-	#include "Matrix\BNSMatrixScalar.c"
+  // Core
+  #include "Core\BNSHeap.c"
+  #include "Core\BNSCore.c"
+  #include "Matrix\BNSMatrix.c"
+  #include "Matrix\BNSMatrixArithmetic.c"
+  #include "Matrix\BNSMatrixScalar.c"
   #include "Filters\PIDController.c"
   #include "Core\BNSDataStructures.c"
 
-	// Features
-	#include "Probability\Gaussian.c"
-	#include "Filters\KalmanFilter.c"
-	#include "Filters\MedianFilter.c"
+  // Features
+  #include "Probability\Gaussian.c"
+  #include "Filters\KalmanFilter.c"
+  #include "Filters\MedianFilter.c"
 
 #elif COMPILER == cGCC
 
-	#include <stdbool.h>
-	#include <stdio.h>
+  #include <stdbool.h>
+  #include <stdio.h>
   #include <stdlib.h>
-	#include <time.h>
+  #include <time.h>
 
-	// Rename several functions for the GCC compiler to interupt
-	#define srand(nSysTime); time_t t;srand((unsigned)time(&t));
-	#define writeDebugStreamLine printf("");printf
-	#define writeDebugStream printf
+  // Rename several functions for the GCC compiler to interupt
+  #define srand(nSysTime); time_t t;srand((unsigned)time(&t));
+  #define writeDebugStreamLine printf("");printf
+  #define writeDebugStream printf
 
-	#include "Core\BNSCore.h"
-	#include "Core\BNSHeap.h"
-	#include "Matrix\BNSMatrix.h"
+  #include "Core\BNSCore.h"
+  #include "Core\BNSHeap.h"
+  #include "Matrix\BNSMatrix.h"
 
 #endif
 
