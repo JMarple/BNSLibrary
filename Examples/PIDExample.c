@@ -18,6 +18,12 @@ task main()
 	BNS();
 
 	// The PID controller that will be used
+	// The basic usage of this PID controller is as following:
+	//
+	// PID pid1;
+	// PIDInit(&pid1, PConstant, IConstant, DConstant);
+	// float feedback = PIDCompute(&pid1, your_error);
+	//
 	PID pid1;
 	PIDInit(&pid1, 0.1, 0, 0.1); // Set P, I, and D constants
 

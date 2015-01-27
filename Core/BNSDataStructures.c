@@ -1,3 +1,37 @@
+// BNSDatastructures.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 1/27/2014
+//
+// This source file includes source code that
+// implements commonly used data structures
+// This includes:
+//   DynamicArray
+//   Stack
+//   ... More to come
+//
+// Dependencies:
+//    BNSDataStructures.h
+//
+// ------------------------------------------------------------------------
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// The author can be contacted by email at jmarple@umass.edu
+//
+// ------------------------------------------------------------------------
+
 #pragma systemFile
 
 #ifndef __BNS_DATA_STRUCTURES_C
@@ -79,6 +113,7 @@ bool DynamicArrayRemoveAt(struct DynamicArray *array, int where)
   		bnsSetHeapElement(array->pointer + i, bnsGetHeapElement(array->pointer + i+1));
   	}
   	bnsSetHeapElement(array->pointer + array->maxSize-1, 0);
+  	array->size--;
   }
   else
   {
@@ -138,6 +173,7 @@ float StackPop(struct Stack *object)
 	return returnVal;
 }
 
+// Puts an element to the top of the stack
 bool StackPush(struct Stack *object, float value)
 {
 	bool good = DynamicArrayAdd(object->array, value);
@@ -153,6 +189,7 @@ bool StackPush(struct Stack *object, float value)
 	}
 }
 
+// Look at the top element without removing it
 float StackPeek(struct Stack *object)
 {
 	if(object->pos < 0)
@@ -168,7 +205,6 @@ bool StackIsEmpty(struct Stack *object)
 {
 	if(object->pos < 0)
 		return true;
-
 
 	return false;
 }
