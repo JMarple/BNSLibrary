@@ -30,6 +30,20 @@ Matrix Operations:
  - MatrixDeterminant      (Matrix *src)
  - MatrixTrace            (Matrix *src)
  
+Dynamic Array Basics:
+ - DynamicArrayAdd        (DynamicArray *array, float value)
+ - DynamicArrayGet        (DynamicArray *array)
+ - DynamicArraySize       (DynamicArray *array)
+ - DynamicArrayRemoveAt   (DynamicArray *array, float index)
+ - DynamicArrayClear      (DynamicArray *array)
+ - DynamicArrayDelete     (DynamicArray *array)
+ 
+Stack Basics:
+ - StackPush              (Stack *object, float value)
+ - StackPop               (Stack *object)
+ - StackPeek              (Stack *object)
+ - StackIsEmpty           (Stack *object)
+ 
 PID Basics:
  - PIDInit                (PID *controller, float kP, float kI, float kD)
  - PIDCompute             (PID *controller, float error)
