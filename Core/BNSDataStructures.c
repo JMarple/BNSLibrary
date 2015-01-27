@@ -78,7 +78,7 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
   }
   else
   {
-    writeDebugStreamLine("%d Trying to extend", array->size);
+    //writeDebugStreamLine("%d Trying to extend", array->size);
     int res = bnsExtend(array->pointer, array->maxSize*2);
     if(res != -1)
     {

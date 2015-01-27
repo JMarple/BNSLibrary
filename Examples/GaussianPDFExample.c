@@ -39,7 +39,7 @@ task main()
   Matrix data;
   CreateMatrix(&data, "1.1; 10.1; 0");
 
-  // Guassian Mean
+  // Guassian Man
   // Ie. Where is the guassisan located?
   Matrix mean;
   CreateMatrix(&mean, "1; 10; 0");
