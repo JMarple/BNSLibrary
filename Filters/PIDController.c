@@ -41,42 +41,42 @@
 // Initializes the default values for the PID Controller
 void PIDInit(struct PID *controller, float kP, float kI, float kD)
 {
-	controller->kP = kP;
-	controller->kI = kI;
-	controller->kD = kD;
+    controller->kP = kP;
+    controller->kI = kI;
+    controller->kD = kD;
 
-	controller->error = controller->previousError = 0;
-	controller->integral = controller->derivative = 0;
+    controller->error = controller->previousError = 0;
+    controller->integral = controller->derivative = 0;
 
-	controller->kILimit = 50;
+    controller->kILimit = 50;
 }
 
 // Computes the response for the PID controller
 float PIDCompute(struct PID *controller, float error)
 {
-	controller->error = error;
-	controller->integral += error;
-	controller->derivative = error - controller->previousError;
-	controller->previousError = error;
+    controller->error = error;
+    controller->integral += error;
+    controller->derivative = error - controller->previousError;
+    controller->previousError = error;
 
-	if(abs(controller->integral) > controller->kILimit)
+    if(abs(controller->integral) > controller->kILimit)
     controller->integral = controller->kILimit;
 
-	return controller->kP * controller->error
-				+ controller->kI * controller->integral
-				+ controller->kD * controller->derivative;
+    return controller->kP * controller->error
+                + controller->kI * controller->integral
+                + controller->kD * controller->derivative;
 }
 
 // Sets the limit for the integral constant
 void PIDSetIntegralLimit(struct PID *controller, float kILimit)
 {
-	controller->kILimit = kILimit;
+    controller->kILimit = kILimit;
 }
 
 // Restes the integral value
 void PIDResetIntegral(struct PID *controller)
 {
-	controller->integral = 0;
+    controller->integral = 0;
 }
 
 #endif

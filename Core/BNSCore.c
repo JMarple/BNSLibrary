@@ -25,8 +25,8 @@ void BNS()
 
 void BNS_ERROR(char* errorTitle, char* error)
 {
-	writeDebugStream("***\nBNS ");
-	writeDebugStreamLine(errorTitle);
-	writeDebugStreamLine(error);
-	writeDebugStreamLine("***");
+    writeDebugStream("***\nBNS ");
+    writeDebugStreamLine(errorTitle);
+    writeDebugStreamLine(error);
+    writeDebugStreamLine("***");
 }

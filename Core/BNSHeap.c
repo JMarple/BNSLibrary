@@ -189,53 +189,53 @@ int bnsMalloc(int size)
 // Extends a previous chunk of memory if possible
 int bnsExtend(int loc, int totalSize)
 {
-	int sizeOfSpace = bnsGetData(loc);
+  int sizeOfSpace = bnsGetData(loc);
 
-	// Check if we need to actually extend
-	if(sizeOfSpace >= totalSize)
-		return loc;
+  // Check if we need to actually extend
+  if(sizeOfSpace >= totalSize)
+    return loc;
 
-	int sizeOfNextSpace = bnsGetData(loc+sizeOfSpace);
+  int sizeOfNextSpace = bnsGetData(loc+sizeOfSpace);
 
-	// Check if there is enough free memory directly after original memory
-	if(sizeOfSpace + sizeOfNextSpace >= totalSize && bnsIsFree(loc+sizeOfSpace) == true)
-	{
-		int x = totalSize + 1;
-		x |= (1 << MEM_FREE_BIT);
+  // Check if there is enough free memory directly after original memory
+  if(sizeOfSpace + sizeOfNextSpace >= totalSize && bnsIsFree(loc+sizeOfSpace) == true)
+  {
+    int x = totalSize + 1;
+    x |= (1 << MEM_FREE_BIT);
     x |= (1 << MEM_PROT_BIT);
     bnsHeap[loc] = x;
     bnsHeap[loc+totalSize+1] = (sizeOfNextSpace - (totalSize - sizeOfSpace + 1));// | (1 << MEM_PROT_BIT);;
     return loc;
-	}
-	else
-	{
-		// We have to find a new section of memory if we reach this point
-		int memloc = bnsMalloc(totalSize);
+  }
+  else
+  {
+    // We have to find a new section of memory if we reach this point
+    int memloc = bnsMalloc(totalSize);
 
-		// Check that we actually got a new memory space
-		if(memloc == -1)
-			return -1;
+    // Check that we actually got a new memory space
+    if(memloc == -1)
+      return -1;
 
-		// Figure out how much to copy from the old memory location
-		int sizeToCopy = bnsGetData(loc);
+    // Figure out how much to copy from the old memory location
+    int sizeToCopy = bnsGetData(loc);
 
-		// Copy all elements from previous
-		for(int i = 0; i < sizeToCopy; i++)
-		{
-			bnsSetHeapElement(memloc+i, bnsGetHeapElement(loc+i));
-		}
+    // Copy all elements from previous
+    for(int i = 0; i < sizeToCopy; i++)
+    {
+      bnsSetHeapElement(memloc+i, bnsGetHeapElement(loc+i));
+    }
 
-		// Free the previous memory
-		bnsFree(loc);
+    // Free the previous memory
+    bnsFree(loc);
 
-		return memloc;
-	}
+    return memloc;
+  }
 }
 
 // Print Heap Memory
 void bnsPrintMemory(int startPos, int endPos)
 {
-	int i;
+  int i;
   for(i = startPos; i < endPos; i++)
   {
     if((i-startPos)%4 == 0)

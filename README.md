@@ -52,4 +52,4 @@ Median Filter Basics:
  - V0.10: First release, basic matrix operation and filters implemented
  - V0.11: Updated for portability with most C compilers (note: still some issues with portability though)
  - V0.12: PID controller added.  Changed MultiplyScalarToMatrix to MatrixMultiplyScalar
- - V0.13: DynamicArray Data Structure Added. Added PID Integral functions.  
+ - V0.13: DynamicArray & Stack Data Structures Added. Added PID Integral functions.  
