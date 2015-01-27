@@ -1,4 +1,4 @@
-// normalDistributionExample.c
+// GaussianPDFExample.c
 //
 // Author: Justin Marple with Team BNS
 // Contact: jmarple@umass.edu
