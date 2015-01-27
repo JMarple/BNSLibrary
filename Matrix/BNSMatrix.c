@@ -50,6 +50,9 @@
 #ifndef __BNS_HEAP_H
 #include "BNSHeap.h"
 #endif
+#ifndef __BNS_CORE_H
+#include "BNSCore.h"
+#endif
 
 // Obtain space for a matrix filled with all zeros
 void CreateZerosMatrix(struct Matrix *mat, int m, int n)
@@ -153,9 +156,8 @@ bool ParseMatrixString(struct Matrix* mat, char* s)
 
   if(cols%rows != 0)
   {
-    writeDebugStreamLine("%d %d", cols, rows);
-
-    writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot parse matrix string in CreateMatrix(...), inconsistent rows or columns!\n***\n");
+    //writeDebugStreamLine("%d %d", cols, rows);
+    BNS_ERROR("MATRIX ERROR", "Cannot parse matrix string in CreateMatrix(...), inconsistent rows or columns!");
     return false;
   }
   cols /= (int)rows;
@@ -293,7 +295,7 @@ void PrintMatrix(struct Matrix *A)
   }
   else
   {
-    writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Print an unset or NULL matrix!\n***\n");
+    BNS_ERROR("MATRIX ERROR", "Cannot Print an unset or NULL matrix!");
   }
 }
 

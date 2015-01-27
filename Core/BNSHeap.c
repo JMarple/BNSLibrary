@@ -161,7 +161,7 @@ int bnsMalloc(int size)
     // sizeOfSpace will be the size of the space + 1, so
     //  if it larger then the requested size, it'll be
     //  large enough
-    if(bnsIsFree(memloc) && sizeOfSpace > size)
+    if(bnsIsFree(memloc) && sizeOfSpace > size+1)
     {
       int x = size+1;
       x |= (1 << MEM_FREE_BIT);
