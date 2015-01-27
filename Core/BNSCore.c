@@ -22,3 +22,11 @@ void BNS()
     // Output version number
     writeDebugStreamLine("*** Loaded BNSLib V0.13 for RobotC 4.27 ***");
 }
+
+void BNS_ERROR(char* errorTitle, char* error)
+{
+	writeDebugStream("***\nBNS ");
+	writeDebugStreamLine(errorTitle);
+	writeDebugStreamLine(error);
+	writeDebugStreamLine("***");
+}

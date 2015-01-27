@@ -16,5 +16,13 @@ float DynamicArrayGet(struct DynamicArray *array, int where);
 bool DynamicArrayAdd(struct DynamicArray *array, float value);
 void DynamicArrayInit(struct DynamicArray *array);
 bool DynamicArrayRemoveAt(struct DynamicArray *array, int where);
+int DynamicArraySize(struct DynamicArray *array);
+void DynamicArrayDelete(struct DynamicArray *array);
+
+struct Stack
+{
+	struct DynamicArray array;
+	int pos;
+};
 
 #endif

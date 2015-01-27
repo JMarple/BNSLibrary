@@ -7,6 +7,17 @@
 #include "BNSDataStructures.h"
 #endif
 
+#ifndef __BNS_HEAP_H
+#include "BNSHeap.h"
+#endif
+
+#ifndef __BNS_CORE_H
+#include "BNSCore.h"
+#endif
+
+// Initializes a dynamic array in memory
+// Default size is in BNSDataStructures.h as
+//  DEFAULT_DYNAMIC_ARRAY_SIZE
 void DynamicArrayInit(struct DynamicArray *array)
 {
 	DynamicArrayClear(array);
@@ -21,6 +32,9 @@ void DynamicArrayInit(struct DynamicArray *array)
 	}
 }
 
+// Automatically adds a new element into DynamicArray
+// If new space is needed, it will automatically allocate that
+//   memory
 bool DynamicArrayAdd(struct DynamicArray *array, float value)
 {
 	if(array->size < array->maxSize)
@@ -41,6 +55,7 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
 		}
 		else
 		{
+			BNS_ERROR("DYNAMIC ARRAY", "Ran out of memory! Check DynamicArrayAdd(...)");
 			return false;
 		}
 	}
@@ -48,11 +63,13 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
 	return true;
 }
 
+// Retrivies a point of memory from the array
 float DynamicArrayGet(struct DynamicArray *array, int where)
 {
 	return bnsGetHeapElement(array->pointer + where);
 }
 
+// Removes a certain element from the array
 bool DynamicArrayRemoveAt(struct DynamicArray *array, int where)
 {
 	if(where < array->maxSize && where >= 0)
@@ -65,14 +82,30 @@ bool DynamicArrayRemoveAt(struct DynamicArray *array, int where)
   }
   else
   {
-    writeDebugStreamLine("***\nBNS DYNAMIC ARRAY ERROR\nTrying to remove unallocated memory, check calls to DynamicArrayRemoveAt(...)\n***\n");
+  	BNS_ERROR("DYNAMIC ARRAY", "Trying to remove unallocated memory, check calls to DynamicArrayRemoveAt(...)");
   	return false;
   }
 
   return true;
 }
 
+// Clears the entire array to a size of zero
+// Note: Memory is still allocated!
 void DynamicArrayClear(struct DynamicArray *array)
+{
+	array->size = 0;
+}
+
+// Returns how large the array is
+int DynamicArraySize(struct DynamicArray *array)
+{
+	return array->size;
+}
+
+// Removes the array from memory entirely
+// Note: You will have to call DynamicArrayInit to
+//  be able to use this array again
+void DynamicArrayDelete(struct DynamicArray *array)
 {
 	array->size = 0;
 	if(array->inUse == true)
@@ -80,6 +113,64 @@ void DynamicArrayClear(struct DynamicArray *array)
 		bnsFree(array->pointer);
 		array->pointer = -1;
 	}
+}
+
+// Initialize the stack
+void StackInit(struct Stack *object)
+{
+	object->pos = -1;
+	DynamicArrayInit(object->array);
+}
+
+// Removes the top-most number and returns it
+//  to the user
+float StackPop(struct Stack *object)
+{
+	if(object->pos < 0)
+	{
+		BNS_ERROR("STACK ERROR", "Cannot pop a stack of size zero!");
+		return 0;
+  }
+
+	float returnVal = DynamicArrayGet(object->array, object->pos);
+	object->pos--;
+
+	return returnVal;
+}
+
+bool StackPush(struct Stack *object, float value)
+{
+	bool good = DynamicArrayAdd(object->array, value);
+
+	if(good)
+	{
+		object->pos++;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+float StackPeek(struct Stack *object)
+{
+	if(object->pos < 0)
+	{
+	  BNS_ERROR("STACK ERROR", "Cannot peek a stack of size zero!");
+		return 0;
+  }
+	return DynamicArrayGet(object->array, object->pos);
+}
+
+// Returns true if the stack is completely empty
+bool StackIsEmpty(struct Stack *object)
+{
+	if(object->pos < 0)
+		return true;
+
+
+	return false;
 }
 
 #endif

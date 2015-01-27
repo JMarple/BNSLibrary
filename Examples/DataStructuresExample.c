@@ -4,7 +4,20 @@ task main()
 {
   BNS();
 
-	DynamicArray arr1;
+  Stack stack1;
+
+  StackInit(&stack1);
+  StackPush(&stack1, 5);
+  StackPush(&stack1, 45);
+  StackPush(&stack1, 88);
+
+  while(!StackIsEmpty(&stack1))
+  {
+  		StackPop(&stack1);
+  	  writeDebugStreamLine("%d", StackPeek(&stack1));
+  }
+
+	/*DynamicArray arr1;
 	DynamicArray arr2;
 	DynamicArray arr3;
 
@@ -28,7 +41,7 @@ task main()
 	for(int i = 0; i < 105; i++)
 	{
 		writeDebugStreamLine("%d", DynamicArrayGet(&arr1, i));
-	}
+	}*/
 
 
 }
