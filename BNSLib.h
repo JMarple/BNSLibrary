@@ -47,6 +47,7 @@
 	#include "Matrix\BNSMatrixArithmetic.c"
 	#include "Matrix\BNSMatrixScalar.c"
   #include "Filters\PIDController.c"
+  #include "Core\BNSDataStructures.c"
 
 	// Features
 	#include "Probability\Gaussian.c"

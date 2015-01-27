@@ -105,7 +105,7 @@ task main()
   CreateMatrix(covarianceMatrixZ, "1 0; 0 1");
 
   // Move Vector
-  // Not entirely sure what this does, best to keep this all zeros
+  // The control input we know is happening.  Typically left at 0
   Matrix moveVector;
   CreateZerosMatrix(moveVector, 4, 1);
 

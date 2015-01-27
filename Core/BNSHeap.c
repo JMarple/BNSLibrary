@@ -86,6 +86,7 @@ bool bnsIsFree(int loc)
   return !(((int)bnsHeap[loc] >> MEM_FREE_BIT)&0x01);
 }
 
+// Not really used..
 bool bnsIsProtected(int space)
 {
   if(space >= sizeof(bnsHeap) / sizeof(bnsHeap[0]))
@@ -148,7 +149,6 @@ void bnsFree(int loc)
 }
 
 // Try to allocate space in the BNS Heap
-//
 int bnsMalloc(int size)
 {
   int memloc = 0;
@@ -158,7 +158,10 @@ int bnsMalloc(int size)
     int sizeOfSpace = bnsGetData(memloc);
 
     // Find a free piece of memory that is large enough
-    if(bnsIsFree(memloc) && sizeOfSpace > size+1)
+    // sizeOfSpace will be the size of the space + 1, so
+    //  if it larger then the requested size, it'll be
+    //  large enough
+    if(bnsIsFree(memloc) && sizeOfSpace > size)
     {
       int x = size+1;
       x |= (1 << MEM_FREE_BIT);
@@ -181,6 +184,52 @@ int bnsMalloc(int size)
       }
     }
   }
+}
+
+// Extends a previous chunk of memory if possible
+int bnsExtend(int loc, int totalSize)
+{
+	int sizeOfSpace = bnsGetData(loc);
+
+	// Check if we need to actually extend
+	if(sizeOfSpace >= totalSize)
+		return loc;
+
+	int sizeOfNextSpace = bnsGetData(loc+sizeOfSpace);
+
+	// Check if there is enough free memory directly after original memory
+	if(sizeOfSpace + sizeOfNextSpace >= totalSize && bnsIsFree(loc+sizeOfSpace) == true)
+	{
+		int x = totalSize + 1;
+		x |= (1 << MEM_FREE_BIT);
+    x |= (1 << MEM_PROT_BIT);
+    bnsHeap[loc] = x;
+    bnsHeap[loc+totalSize+1] = (sizeOfNextSpace - (totalSize - sizeOfSpace + 1));// | (1 << MEM_PROT_BIT);;
+    return loc;
+	}
+	else
+	{
+		// We have to find a new section of memory if we reach this point
+		int memloc = bnsMalloc(totalSize);
+
+		// Check that we actually got a new memory space
+		if(memloc == -1)
+			return -1;
+
+		// Figure out how much to copy from the old memory location
+		int sizeToCopy = bnsGetData(loc);
+
+		// Copy all elements from previous
+		for(int i = 0; i < sizeToCopy; i++)
+		{
+			bnsSetHeapElement(memloc+i, bnsGetHeapElement(loc+i));
+		}
+
+		// Free the previous memory
+		bnsFree(loc);
+
+		return memloc;
+	}
 }
 
 // Print Heap Memory

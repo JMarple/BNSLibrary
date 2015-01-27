@@ -58,6 +58,9 @@ struct PID
 	//  to correct itself
 	float kD;
 
+	// Limit for how high/low the integral variable can go before beging cut off.
+	float kILimit;
+
 	// Various variables to keep track of for the PID Controller
 	float error;
 	float previousError;
@@ -72,5 +75,13 @@ void PIDInit(struct PID *controller, float kP, float kI, float kD);
 // PIDCompute(...)
 // Computes the response of the PID given an error value
 float PIDCompute(struct PID *controller, float error);
+
+// PIDSetIntegralLimit(...)
+// Sets the limit for how large for the integral value can become
+void PIDSetIntegralLimit(struct PID *controller, float kILimit);
+
+// PIDResetIntegral(...)
+// Resets the integral value to zero
+void PIDResetIntegral(struct PID *controller);
 
 #endif

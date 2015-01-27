@@ -1,4 +1,4 @@
-<h2>BNSLib V0.12</h2>
+<h2>BNSLib V0.13</h2>
 This library is designed to be an advanced library for Highschool and University Vex Robotics Teams.  It can be compiled on RobotC 4.27 (older versions may not compile correctly).  The library features several concepts:
  - Dynamic Memory Allocation
  - Complex Matrix Operations (+ - * /, deterimant, trace, and others)
@@ -52,3 +52,4 @@ Median Filter Basics:
  - V0.10: First release, basic matrix operation and filters implemented
  - V0.11: Updated for portability with most C compilers
  - V0.12: PID controller added.  Changed MultiplyScalarToMatrix to MatrixMultiplyScalar
+ - V0.13: DynamicArray Data Structure Added. Added PID Integral functions.  
