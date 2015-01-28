@@ -43,12 +43,12 @@
   // Core
   #include "Core\BNSHeap.c"
   #include "Core\BNSCore.c"
-  #include "Matrix\BNSMatrix.c"
-  #include "Matrix\BNSMatrixArithmetic.c"
-  #include "Matrix\BNSMatrixScalar.c"
+  #include "Core\Matrix\BNSMatrix.c"
+  #include "Core\Matrix\BNSMatrixArithmetic.c"
+  #include "Core\Matrix\BNSMatrixScalar.c"
   #include "Filters\PIDController.c"
   #include "Core\BNSDataStructures.c"
-  #include "Core\Gaussian.c"
+  #include "Core\Probability\Gaussian.c"
 
   // Features
   #include "Filters\KalmanFilter.c"
