@@ -48,9 +48,9 @@
   #include "Matrix\BNSMatrixScalar.c"
   #include "Filters\PIDController.c"
   #include "Core\BNSDataStructures.c"
+  #include "Core\Gaussian.c"
 
   // Features
-  #include "Probability\Gaussian.c"
   #include "Filters\KalmanFilter.c"
   #include "Filters\MedianFilter.c"
 
