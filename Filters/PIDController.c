@@ -59,9 +59,12 @@ float PIDCompute(struct PID *controller, float error)
     controller->derivative = error - controller->previousError;
     controller->previousError = error;
 
-    if(abs(controller->integral) > controller->kILimit)
-    controller->integral = controller->kILimit;
-
+    if(controller->integral > controller->kILimit)
+        controller->integral = controller->kILimit;
+        
+    if(controller->integral < -controller->kILimit)
+        controller->integral = -controller->kILimit;
+    
     return controller->kP * controller->error
                 + controller->kI * controller->integral
                 + controller->kD * controller->derivative;
