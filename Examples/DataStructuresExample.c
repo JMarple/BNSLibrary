@@ -37,6 +37,7 @@ task main()
   // Initialize the dynamic array
   writeDebugStreamLine("Dynamic Array Example: Adding elements");
   DynamicArray arr1;
+  DynamicArray arr2;
   DynamicArrayInit(&arr1);
 
   for(int i = 0; i < 5; i++)
@@ -44,6 +45,7 @@ task main()
   	// Add i*5 to the array
   	DynamicArrayAdd(&arr1, i*5);
   }
+  DynamicArrayCopyByValue(&arr2, arr1);
 
   // Remove an element cause whynot
   DynamicArrayRemoveAt(&arr1, 2);
@@ -52,6 +54,8 @@ task main()
   for(int i = 0; i < DynamicArraySize(&arr1); i++)
   	writeDebugStreamLine("Element at %d is %d", i, DynamicArrayGet(&arr1, i));
 
+  for(int i = 0; i < DynamicArraySize(&arr2); i++)
+ 		writeDebugStreamLine("Element at %d is %d", i, DynamicArrayGet(&arr1, i));
 
   // Initilize the stack
   writeDebugStreamLine("Stack Example: Pushing/Popping 5, 45, and 88 to the stack");

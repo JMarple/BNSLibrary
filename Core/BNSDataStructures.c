@@ -66,6 +66,22 @@ void DynamicArrayInit(struct DynamicArray *array)
   }
 }
 
+// Initialize a dynamic array to a default size
+// SetSize is how much memory will be allocated by default
+void DynamicArrayInitDefault(struct DynamicArray *array, int setSize)
+{
+	DynamicArrayClear(array);
+
+	array->pointer = bnsMalloc(setSize);
+
+	if(array->pointer != -1)
+	{
+		array->maxSize = setSize;
+		array->size = 0;
+		array->inUse = true;
+	}
+}
+
 // Automatically adds a new element into DynamicArray
 // If new space is needed, it will automatically allocate that
 //   memory
@@ -95,6 +111,50 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
   }
 
   return true;
+}
+
+// Sets a point in memory
+void DynamicArraySet(struct DynamicArray *array, int where, float value)
+{
+	if(where < array->maxSize)
+	{
+		// This makes sure the pointer to where to add data isn't
+	  //  overwriting data
+		if(where >= array->size)
+			array->size = where+1;
+
+		bnsSetHeapElement(array->pointer + where, value);
+	}
+}
+
+// Copies an array from source to destination by reference,
+//  note allocating new memory
+bool DynamicArrayCopy(struct DynamicArray *dst, struct DynamicArray src)
+{
+	dst->maxSize = src.maxSize;
+	dst->size = src.size;
+	dst->inUse = src.inUse;
+	dst->pointer = src.pointer;
+
+	return true;
+}
+
+// Copy a matrix by allocating new memory for it
+bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
+{
+	int i;
+	DynamicArrayDelete(dst);
+	DynamicArrayInitDefault(dst, src.maxSize);
+
+	dst->inUse = true;
+	for(i = 0; i < dst->maxSize; i++)
+	{
+		DynamicArraySet(dst, i, DynamicArrayGet(&src, i));
+	}
+
+	dst->size = src.size;
+
+	return true;
 }
 
 // Retrivies a point of memory from the array

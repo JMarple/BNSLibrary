@@ -48,21 +48,23 @@
 #include "BNSMatrix.h"
 #endif
 #ifndef __BNS_HEAP_H
-#include "BNSHeap.h"
+#include "../BNSHeap.h"
 #endif
 #ifndef __BNS_CORE_H
-#include "BNSCore.h"
+#include "../BNSCore.h"
 #endif
 
 // Obtain space for a matrix filled with all zeros
 void CreateZerosMatrix(struct Matrix *mat, int m, int n)
 {
   int i, j;
+
   // Dimensions
   mat->m = m;
   mat->n = n;
-  mat->inUse = true;
-  mat->bufferLocation = bnsMalloc(m*n);
+
+  // Reserve memory for the array
+  DynamicArrayInitDefault(&mat->array, m*n);
 
   // Initalize to all zeros
   for(i = 0; i < m; i++)
@@ -78,8 +80,9 @@ void CreateIdentityMatrix(struct Matrix* mat, int n)
   // Dimensions
   mat->m = n;
   mat->n = n;
-  mat->inUse = true;
-  mat->bufferLocation = bnsMalloc(n*n);
+
+  // Reserve memory for the array
+  DynamicArrayInitDefault(&mat->array, n*n);
 
   // Initialize with 1's on the main diagonal
   for(i = 0; i < n; i++)
@@ -165,8 +168,10 @@ bool ParseMatrixString(struct Matrix* mat, char* s)
   // Set Parameters
   mat->m = rows;
   mat->n = cols;
-  mat->inUse = true;
-  mat->bufferLocation = bnsMalloc(rows*cols);
+
+   // Reserve memory for the array
+  DynamicArrayInitDefault(&mat->array, rows*cols);
+
   return true;
 }
 
@@ -221,33 +226,21 @@ void DeleteMatrix(struct Matrix *mat)
 {
   mat->m = 0;
   mat->n = 0;
-  if(mat->inUse == true)
-  {
-    bnsFree(mat->bufferLocation);
-    mat->bufferLocation = -1;
-  }
+ 	DynamicArrayDelete(&mat->array);
 }
 
 // Get a copy of a matrix by allocating new space and
 //   directly copying all values to the new matrix
 bool CopyMatrixByValue(struct Matrix* dst, struct Matrix src)
 {
-  int i, j;
-  DeleteMatrix(dst);
-  CreateZerosMatrix(dst, src.m, src.n);
-
-  dst->m = src.m;
-  dst->n = src.n;
-
-  for(i = 0; i < dst->m; i++)
+  bool result = DynamicArrayCopyByValue(&dst->array, src.array);
+  if(result == true)
   {
-    for(j = 0; j < dst->n; j++)
-    {
-      SetMatrixAt(dst, i, j, GetMatrixAt(&src, i, j));
-    }
+  	dst->m = src.m;
+  	dst->n = src.n;
   }
 
-  return true;
+  return result;
 }
 
 // Get a copy of a matrix by getting a reference to
@@ -256,7 +249,7 @@ bool CopyMatrix(struct Matrix *dst, struct Matrix src)
 {
   dst->m = src.m;
   dst->n = src.n;
-  dst->bufferLocation = src.bufferLocation;
+  DynamicArrayCopy(&dst->array, src.array);
 
   return true;
 }
@@ -264,16 +257,16 @@ bool CopyMatrix(struct Matrix *dst, struct Matrix src)
 // Set an element in a matrix, given m-down and n-across
 void SetMatrixAt(struct Matrix *mat, int m, int n, float value)
 {
-  if(m <= mat->m && n <= mat->n)
+	if(m <= mat->m && n <= mat->n)
   {
-    bnsSetHeapElement(mat->bufferLocation + mat->n * m + n, value);
+  	DynamicArraySet(&mat->array, mat->n * m + n, value);
   }
 }
 
 // Get an element in a matrix given m-down and n-across
 float GetMatrixAt(struct Matrix *mat, int m, int n)
 {
-  return bnsGetHeapElement(mat->bufferLocation + mat->n * m + n);
+	return DynamicArrayGet(mat->array, mat->n * m + n);
 }
 
 // Print a Matrix to the console
@@ -281,7 +274,7 @@ void PrintMatrix(struct Matrix *A)
 {
   int i, j;
 
-  if(A->inUse == true)
+  if(A->array.inUse == true)
   {
     writeDebugStream("Matrix:\n");
     for(i = 0; i < A->m; i++)

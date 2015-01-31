@@ -45,7 +45,11 @@
 #define __BNS_MATRIX_H
 
 #ifndef __BNS_HEAP_H
-#include "../Core/BNSHeap.h"
+#include "../BNSHeap.h"
+#endif
+
+#ifndef __BNS_DATA_STRUCTURES_H
+#include "../BNSDataStructures.h"
 #endif
 
 struct Matrix
@@ -56,11 +60,8 @@ struct Matrix
 	// Number of columns
 	int n;
 
-	// Number f
-	bool inUse;
-
-	// Location in our "Matrix Builder" buffer
-	int bufferLocation;
+	// Array we will read out of
+	struct DynamicArray array;
 };
 
 // CreateNewMatrix(...)

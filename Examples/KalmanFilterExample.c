@@ -141,10 +141,23 @@ task main()
     SetMatrixAt(data, 0, 0, i + noise);
     SetMatrixAt(data, 1, 0, i*2 + noise);
 
+
+
     // Predict and Update Kalman Filter
     KalmanPredict(filter);
+    writeDebugStreamLine("After Predict:");
+    //PrintMatrix(filter.covarianceMatrixX);
     KalmanUpdate(filter, data);
+    writeDebugStreamLine("After Update:");
+    //PrintMatrix(filter.covarianceMatrixX);
+    writeDebugStreamLine("Newline");
   }
+
+
+  PrintMatrix(filter.moveVector);
+  PrintMatrix(filter.extractionMatrix);
+
+  PrintMatrix(filter.covarianceMatrixZ);
 
   // Output estimation 1
   writeDebugStreamLine("Pos1 = %f, Vel1 = %f",

@@ -63,12 +63,28 @@ struct DynamicArray
 };
 
 // DynamicArrayInit(...)
-// Initializes the DynamicArray to default values
+// Initializes the DynamicArray to default size
 void DynamicArrayInit(struct DynamicArray *array);
+
+// DynamicArrayInitDefault(...)
+// Initializes the DynamicArray to a set size
+void DynamicArrayInitDefault(struct DynamicArray *array, int setSize);
 
 // DynamicArrayGet(...)
 // Retrives data at a certain index
 float DynamicArrayGet(struct DynamicArray *array, int where);
+
+// DynamicArrayCopy(...)
+// Copies an array from source to destination by reference
+bool DynamicArrayCopy(struct DynamicArray *dst, struct DynamicArray src);
+
+// DynamicArrayCopyByValue(...)
+// Copies an array from source to destination by allocating new memory
+bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src);
+
+// DynamicArraySet(...)
+// Sets a certain point in memory to a given value
+void DynamicArraySet(struct DynamicArray *array, int where, float value);
 
 // DynamicArrayAdd(...)
 // This adds a new element to the array

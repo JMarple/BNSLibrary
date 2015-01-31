@@ -141,7 +141,7 @@ bool MatrixAdd(struct Matrix *dst, struct Matrix A, struct Matrix B)
     writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Add a %d, %d to a %d, %d matrix, not the same size\n***\n", A.m, A.n, B.m, B.n);
     return false;
   }
-  if(dst->inUse == false || dst->m != A.m || dst->n != A.n)
+  if(dst->array.inUse == false || dst->m != A.m || dst->n != A.n)
   {
     DeleteMatrix(dst);
     CreateZerosMatrix(dst, A.m, A.n);
@@ -169,7 +169,7 @@ bool MatrixSub(struct Matrix *dst, struct Matrix A, struct Matrix B)
     writeDebugStreamLine("***\nBNS MATRIX ERROR\nCannot Subtract a %d, %d to a %d, %d matrix, not the same size\n***\n", A.m, A.n, B.m, B.n);
     return false;
   }
-  if(dst->inUse == false || dst->m != A.m || dst->n != A.n)
+  if(dst->array.inUse == false || dst->m != A.m || dst->n != A.n)
   {
     DeleteMatrix(dst);
     CreateZerosMatrix(dst, A.m, A.n);

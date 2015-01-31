@@ -84,6 +84,9 @@ void KalmanPredict(struct KalmanFilter *kal)
   MatrixTranspose(&F_trans, kal->updateMatrix);
   MatrixMult(&P_next, P_next, F_trans);
 
+  writeDebugStreamLine("PNEXT");
+  PrintMatrix(P_next);
+
   // Copy results to the kalmanfilter class
   CopyMatrixByValue(&kal->meanVector, x_next);
   CopyMatrixByValue(&kal->covarianceMatrixX, P_next);
