@@ -153,7 +153,6 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
 	}
 
 	dst->size = src.size;
-
 	return true;
 }
 

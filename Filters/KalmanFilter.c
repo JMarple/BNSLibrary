@@ -75,6 +75,10 @@ void KalmanPredict(struct KalmanFilter *kal)
 {
   struct Matrix x_next, P_next, F_trans;
 
+  CreateBlankMatrix(x_next);
+  CreateBlankMatrix(P_next);
+  CreateBlankMatrix(F_trans);
+
   // Calculate x_next (update guassian mean)
   MatrixMult(&x_next, kal->updateMatrix, kal->meanVector);
   MatrixAdd(&x_next, x_next, kal->moveVector);
@@ -83,9 +87,6 @@ void KalmanPredict(struct KalmanFilter *kal)
   MatrixMult(&P_next, kal->updateMatrix, kal->covarianceMatrixX);
   MatrixTranspose(&F_trans, kal->updateMatrix);
   MatrixMult(&P_next, P_next, F_trans);
-
-  writeDebugStreamLine("PNEXT");
-  PrintMatrix(P_next);
 
   // Copy results to the kalmanfilter class
   CopyMatrixByValue(&kal->meanVector, x_next);
@@ -104,11 +105,18 @@ void KalmanUpdate(struct KalmanFilter *kal, struct Matrix meas)
 {
   struct Matrix y, S, extTran, K, Sinv, x_next, P_next;
 
+  CreateBlankMatrix(y);
+  CreateBlankMatrix(S);
+  CreateBlankMatrix(extTran);
+  CreateBlankMatrix(K);
+  CreateBlankMatrix(Sinv);
+  CreateBlankMatrix(x_next);
+  CreateBlankMatrix(P_next);
+
   CopyMatrix(&kal->measurementVector, meas);
 
   // Find the difference between the move (measurement)
   //   and what we predicted (extraction * data)
-
   MatrixMult(&y, kal->extractionMatrix, kal->meanVector);
   MatrixSub(&y, kal->measurementVector, y);
 

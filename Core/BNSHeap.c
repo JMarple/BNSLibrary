@@ -157,6 +157,12 @@ int bnsMalloc(int size)
   {
     int sizeOfSpace = bnsGetData(memloc);
 
+    // Size of space should never be <= 0
+    if(sizeOfSpace <= 0)
+    {
+    	while(1==1){;}
+    }
+
     // Find a free piece of memory that is large enough
     // sizeOfSpace will be the size of the space + 1, so
     //  if it larger then the requested size, it'll be
@@ -167,7 +173,14 @@ int bnsMalloc(int size)
       x |= (1 << MEM_FREE_BIT);
       x |= (1 << MEM_PROT_BIT);
       bnsHeap[memloc] = x;
-      bnsHeap[memloc+size+1] = (sizeOfSpace - (size+1)) | (1 << MEM_PROT_BIT);
+
+      // If this is equal to zero, we have the exact chunk size we need, but we
+      //   don't want to overwrite the next section. Only point to the next section
+      //   if there is space to do so
+      if(sizeOfSpace - (size+1) > 0)
+      {
+        bnsHeap[memloc+size+1] = (sizeOfSpace - (size+1)) | (1 << MEM_PROT_BIT);
+		  }
 
       return memloc;
     }
@@ -250,7 +263,7 @@ void bnsPrintMemory(int startPos, int endPos)
     writeDebugStream("%d ", bnsGetData(i));
 
   }
-  writeDebugStreamLine("");
+  writeDebugStreamLine("\n");
 }
 
 // Print Heap Report (good for finding memory leaks)

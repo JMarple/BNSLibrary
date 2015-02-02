@@ -71,5 +71,9 @@ task main()
     motorSpeed += momentum;
     momentum += pidResult * kMomentum;
     writeDebugStreamLine("%f", motorSpeed);
+
+    // There is a bug in RobotC where if you print too fast,
+    //   you might get weird characters at random
+    delay(1);
   }
 }

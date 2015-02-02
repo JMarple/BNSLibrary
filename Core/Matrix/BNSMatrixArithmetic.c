@@ -73,7 +73,6 @@ bool MatrixMult(struct Matrix *dst, struct Matrix A, struct Matrix B)
       {
         sum += GetMatrixAt(&A, row, k) * GetMatrixAt(&B, k, col);
       }
-
       SetMatrixAt(&dstCopy, row, col, sum);
     }
   }

@@ -84,4 +84,13 @@ float bnsGetHeapElement(int element);
 //  write to an incorrect memory location!
 bool bnsSetHeapElement(int element, float value);
 
+// bnsPrintMemory(...)
+// Prints the memory contents from memory location start to end
+// "*" designates free memory, "|" designates protected memory
+void bnsPrintMemory(int startPos, int endPos);
+
+// bnsPrintMemoryDetails(...)
+// Prints details about memory usage
+void bnsPrintMemoryDetails();
+
 #endif

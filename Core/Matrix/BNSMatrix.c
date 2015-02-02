@@ -97,6 +97,11 @@ void CreateIdentityMatrix(struct Matrix* mat, int n)
   }
 }
 
+void CreateBlankMatrix(struct Matrix* mat)
+{
+	mat->array.inUse = false;
+}
+
 // This function takes in a string input and determines
 //   how many rows and columns the user wants to have
 //   ';' means a new row, spaces means new column
@@ -276,7 +281,7 @@ void PrintMatrix(struct Matrix *A)
 
   if(A->array.inUse == true)
   {
-    writeDebugStream("Matrix:\n");
+    writeDebugStream("Matrix: %d\n", A->array.pointer);
     for(i = 0; i < A->m; i++)
     {
       for(j = 0; j < A->n; j++)

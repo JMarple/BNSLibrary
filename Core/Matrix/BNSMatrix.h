@@ -75,6 +75,10 @@ void CreateZerosMatrix(struct Matrix *mat, int m, int n);
 //   major digonals will be filled with ones
 void CreateIdentityMatrix(struct Matrix *mat, int n);
 
+// CreateBlankMatrix(...)
+// Initializes basic values without allocating memory
+void CreateBlankMatrix(struct Matrix* mat);
+
 // CreateMatrix(...)
 // Initalizes a matrix given an character input
 // Returns true if the input is succesfully parsed
