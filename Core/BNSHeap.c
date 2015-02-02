@@ -160,7 +160,7 @@ int bnsMalloc(int size)
     // Size of space should never be <= 0
     if(sizeOfSpace <= 0)
     {
-    	while(1==1){;}
+    	while(1==1){delay(1);}
     }
 
     // Find a free piece of memory that is large enough
