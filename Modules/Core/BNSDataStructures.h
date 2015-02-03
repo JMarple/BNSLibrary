@@ -64,11 +64,11 @@ struct DynamicArray
 
 // DynamicArrayInit(...)
 // Initializes the DynamicArray to default size
-void DynamicArrayInit(struct DynamicArray *array);
+bool DynamicArrayInit(struct DynamicArray *array);
 
 // DynamicArrayInitDefault(...)
 // Initializes the DynamicArray to a set size
-void DynamicArrayInitDefault(struct DynamicArray *array, int setSize);
+bool DynamicArrayInitDefault(struct DynamicArray *array, int setSize);
 
 // DynamicArrayGet(...)
 // Retrives data at a certain index
@@ -102,6 +102,10 @@ bool DynamicArrayRemoveAt(struct DynamicArray *array, int where);
 // Returns the size of the current aray (not how much memory is allocated)
 int DynamicArraySize(struct DynamicArray *array);
 
+// DynamicArrayAllocatedSize(...)
+// Returns the amount of allocated memory in this array
+int DynamicArrayAllocatedSize(struct DynamicArray *array);
+
 // DynamicArrayDelete(...)
 // Frees up memory completely, note you will need to recall
 //  DynamicArrayInit(...) to reuse this array
@@ -125,7 +129,7 @@ struct Stack
 
 // StackInit(...)
 // Starts the stack with it's default values
-void StackInit(struct Stack *object);
+bool StackInit(struct Stack *object);
 
 // StackPop(...)
 // Removes the top most element and returns it
@@ -145,4 +149,26 @@ bool StackIsEmpty(struct Stack *object);
 
 // ------------------------------------------------------------------------
 //
+// CircularBuffer
+
+struct CircularBuffer
+{
+	// Our array of data
+	struct DynamicArray array;
+
+	// Head/Tail of the buffer
+	int startPos;
+	int endPos;
+};
+
+// CircularBufferInit(...)
+// Initilizes default values into the circular buffer
+bool CircularBufferInit(struct CircularBuffer* object, int size);
+
+bool CircularBufferIsEmpty(struct CircularBuffer* object);
+bool CircularBufferIsFull(struct CircularBuffer* object);
+int CircularBufferSize(struct CircularBuffer* object);
+bool CircularBufferAdd(struct CircularBuffer* object, float value);
+float CircularBufferGet(struct CircularBuffer* object);
+
 #endif

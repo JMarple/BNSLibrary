@@ -35,7 +35,7 @@ task main()
   BNS();
 
   // Initialize the dynamic array
-  writeDebugStreamLine("Dynamic Array Example: Adding elements");
+  writeDebugStreamLine("\nDynamic Array Example: Adding elements to array");
   DynamicArray arr1;
   DynamicArrayInit(&arr1);
 
@@ -52,11 +52,9 @@ task main()
   for(int i = 0; i < DynamicArraySize(&arr1); i++)
   	writeDebugStreamLine("Element at %d is %d", i, DynamicArrayGet(&arr1, i));
 
-
   // Initilize the stack
-  writeDebugStreamLine("Stack Example: Pushing/Popping 5, 45, and 88 to the stack");
+  writeDebugStreamLine("\nStack Example: Pushing/Popping 5, 45, and 88 to the stack");
   Stack stack1;
-  writeDebugStreamLine("STACK");
   StackInit(&stack1);
 
   // Add elements to the stack
@@ -69,4 +67,19 @@ task main()
   {
   	  writeDebugStreamLine("%d", StackPop(&stack1));
   }
+
+  writeDebugStreamLine("\nCircular Buffer Example: Adding/Reading 3.1, 3.7, 4.1");
+
+  // Create a circular buffer of 3 elements
+  CircularBuffer cir1;
+  CircularBufferInit(&cir1, 3);
+
+  // Add elements to the buffer
+  CircularBufferAdd(&cir1, 3.1);
+  CircularBufferAdd(&cir1, 3.7);
+  CircularBufferAdd(&cir1, 4.1);
+
+  // Read out all the elements in the buffer
+  while(!CircularBufferIsEmpty(&cir1))
+		writeDebugStreamLine("%f", CircularBufferGet(&cir1));
 }

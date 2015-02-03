@@ -363,6 +363,14 @@ bool MatrixInv(struct Matrix *dst, struct Matrix A)
   if(A.m != A.n)
     return false;
 
+  // If a 1x1 Matrix, just return the one value ^ -1
+  if(A.m == 1)
+  {
+  	CreateZerosMatrix(dst, 1, 1);
+  	SetMatrixAt(dst, 0, 0, 1.0/GetMatrixAt(A, 0, 0));
+  	return true;
+  }
+
   CreateZerosMatrix(&dstTmp, A.m, A.n);
 
   realResult = true;

@@ -41,18 +41,21 @@
 #if COMPILER == cROBOTC
 
   // Core
-  #include "Core\BNSHeap.c"
-  #include "Core\BNSCore.c"
-  #include "Core\Matrix\BNSMatrix.c"
-  #include "Core\Matrix\BNSMatrixArithmetic.c"
-  #include "Core\Matrix\BNSMatrixScalar.c"
-  #include "Filters\PIDController.c"
-  #include "Core\BNSDataStructures.c"
-  #include "Core\Probability\Gaussian.c"
+  #include "Modules\Core\BNSHeap.c"
+  #include "Modules\Core\BNSCore.c"
+  #include "Modules\Core\Matrix\BNSMatrix.c"
+  #include "Modules\Core\Matrix\BNSMatrixArithmetic.c"
+  #include "Modules\Core\Matrix\BNSMatrixScalar.c"
+  #include "Modules\Filters\PIDController.c"
+  #include "Modules\Core\BNSDataStructures.c"
+  #include "Modules\Core\Probability\Gaussian.c"
 
   // Features
-  #include "Filters\KalmanFilter.c"
-  #include "Filters\MedianFilter.c"
+  #include "Modules\Filters\KalmanFilter.c"
+  #include "Modules\Filters\MedianFilter.c"
+
+  // Simple Interfaces
+  #include "Modules\Simple\SimpleKalmanFilter.c"
 
 #elif COMPILER == cGCC
 
@@ -66,9 +69,9 @@
   #define writeDebugStreamLine printf("");printf
   #define writeDebugStream printf
 
-  #include "Core\BNSCore.h"
-  #include "Core\BNSHeap.h"
-  #include "Matrix\BNSMatrix.h"
+  #include "Modules\Core\BNSCore.h"
+  #include "Modules\Core\BNSHeap.h"
+  #include "Modules\Core\Matrix\BNSMatrix.h"
 
 #endif
 

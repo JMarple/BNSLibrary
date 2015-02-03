@@ -45,7 +45,7 @@
 #include "KalmanFilter.h"
 #endif
 #ifndef __BNS_MATRIX_H
-#include "..\Matrix\BNSMatrix.h"
+#include "..\Modules\Matrix\BNSMatrix.h"
 #endif
 
 // Kalman filter initilizations

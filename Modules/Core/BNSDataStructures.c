@@ -9,7 +9,7 @@
 // This includes:
 //   DynamicArray
 //   Stack
-//   ... More to come
+//   CircularBuffer
 //
 // Dependencies:
 //    BNSDataStructures.h
@@ -52,7 +52,7 @@
 // Initializes a dynamic array in memory
 // Default size is in BNSDataStructures.h as
 //  DEFAULT_DYNAMIC_ARRAY_SIZE
-void DynamicArrayInit(struct DynamicArray *array)
+bool DynamicArrayInit(struct DynamicArray *array)
 {
   DynamicArrayClear(array);
 
@@ -63,12 +63,17 @@ void DynamicArrayInit(struct DynamicArray *array)
     array->maxSize = DEFAULT_DYNAMIC_ARRAY_SIZE;
     array->size = 0;
     array->inUse = true;
+    return true;
+  }
+  else
+  {
+  	return false;
   }
 }
 
 // Initialize a dynamic array to a default size
 // SetSize is how much memory will be allocated by default
-void DynamicArrayInitDefault(struct DynamicArray *array, int setSize)
+bool DynamicArrayInitDefault(struct DynamicArray *array, int setSize)
 {
 	DynamicArrayClear(array);
 
@@ -79,6 +84,11 @@ void DynamicArrayInitDefault(struct DynamicArray *array, int setSize)
 		array->maxSize = setSize;
 		array->size = 0;
 		array->inUse = true;
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -196,6 +206,12 @@ int DynamicArraySize(struct DynamicArray *array)
   return array->size;
 }
 
+// Returns how much memory has been allocated
+int DynamicArrayAllocatedSize(struct DynamicArray *array)
+{
+	return array->maxSize;
+}
+
 // Removes the array from memory entirely
 // Note: You will have to call DynamicArrayInit to
 //  be able to use this array again
@@ -210,10 +226,10 @@ void DynamicArrayDelete(struct DynamicArray *array)
 }
 
 // Initialize the stack
-void StackInit(struct Stack *object)
+bool StackInit(struct Stack *object)
 {
   object->pos = -1;
-  DynamicArrayInit(object->array);
+  return DynamicArrayInit(object->array);
 }
 
 // Removes the top-most number and returns it
@@ -268,4 +284,65 @@ bool StackIsEmpty(struct Stack *object)
   return false;
 }
 
+// Initializes the buffer to a set size
+bool CircularBufferInit(struct CircularBuffer* object, int size)
+{
+	object->startPos = 0;
+	object->endPos = 0;
+
+	if(size <= 0)
+		size = 1;
+
+	return DynamicArrayInitDefault(object->array, size+1);
+}
+
+// Returns true if the buffer it completely empty
+bool CircularBufferIsEmpty(struct CircularBuffer* object)
+{
+	if(object->startPos == object->endPos)
+		return true;
+
+	return false;
+}
+
+// Returns true if the buffer is full
+bool CircularBufferIsFull(struct CircularBuffer* object)
+{
+	if( (object->endPos+1)%CircularBufferSize(object) == object->startPos)
+		return true;
+
+  return false;
+}
+
+// Returns the size of the buffer
+int CircularBufferSize(struct CircularBuffer* object)
+{
+	return DynamicArrayAllocatedSize(&object->array);
+}
+
+// Adds a new element to a circular buffer
+bool CircularBufferAdd(struct CircularBuffer* object, float value)
+{
+	if(CircularBufferIsFull(object))
+	{
+		BNS_ERROR("CIRCULAR BUFFER", "CIRCULAR BUFFER IS FULL in CircularBufferAdd(...)");
+		return false;
+	}
+	DynamicArraySet(&object->array, object->endPos, value);
+	object->endPos = (object->endPos+1)%CircularBufferSize(object);
+	return true;
+}
+
+// Gets the next element on the circular buffer
+float CircularBufferGet(struct CircularBuffer* object)
+{
+	if(CircularBufferIsEmpty(object))
+	{
+		BNS_ERROR("CIRCULAR BUFFER", "CIRCULAR BUFFER IS EMPTY in CircularBufferGet(...)");
+		return 0;
+	}
+	float returnResult = DynamicArrayGet(&object->array, object->startPos);
+	object->startPos = (object->startPos+1)%CircularBufferSize(object);
+	return returnResult;
+}
 #endif

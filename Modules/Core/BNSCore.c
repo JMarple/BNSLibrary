@@ -20,7 +20,7 @@ void BNS()
     srand(nSysTime);
 
     // Output version number
-    writeDebugStreamLine("*** Loaded BNSLib V0.13.3 for RobotC 4.27 ***");
+    writeDebugStreamLine("*** Loaded BNSLib V0.14.0 for RobotC 4.27 ***");
 }
 
 void BNS_ERROR(char* errorTitle, char* error)
