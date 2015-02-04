@@ -39,14 +39,16 @@ task main()
   MotionProfile prof1;
 
   // Initiate the motion profile with a distance of 0
-  MotionProfileInit(&prof1, 1000);
+  MotionProfileInit(&prof1);
   MotionProfileSetAccel(&prof1, 0.5, 1); // Accel = 0.5, decel = 1
+  MotionProfileSetDistance(&prof1, 1000); // Distance = 1000
   MotionProfileSetVelocity(&prof1, 0, 25, 0); // V_0 = 0, V_max = 25, V_exit = 0
 
-  for(int time = 0; time < 100; time++)
-  {
+  float time = 0;
+  while(!MotionProfileIsComplete(&prof1, time))
+	{
   	float velocity = MotionProfileCompute(&prof1, time);
   	writeDebugStreamLine("%f", velocity);
+		time++;
   }
-
 }

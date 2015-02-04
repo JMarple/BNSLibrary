@@ -47,4 +47,30 @@ struct MotionProfile
 	float distance;
 };
 
+// MotionProfileInit(...)
+// Initate defaults for the motion profile
+void MotionProfileInit(struct MotionProfile *profile);
+
+// MotionProfileSetDistance(...)
+// Sets the desired distance for the motion controller
+void MotionProfileSetDistance(struct MotionProfile *profile, float distance);
+
+// MotionProfileSetAccel(...)
+// Sets the desired acceleration/deceleration for the motion controller
+void MotionProfileSetAccel(struct MotionProfile *profile, float accel, float decel);
+
+// MotionProfileSetVelocity(...)
+// Sets the desired velocities for the motion controller
+void MotionProfileSetVelocity(struct MotionProfile *profile, float enterVel, float maxVel, float exitVel);
+
+// MotionProfileIsComplete(...)
+// Returns true if the motion profile is complete at a given time variable
+bool MotionProfileIsComplete(struct MotionProfile *profile, float time);
+// MotionProfileCompute(...)
+// Given a time input, return the appropriate speed
+// Units are entirely arbritrary and should be determined by the user
+// This should be used in a loop with a variable that relates to the real world time
+float MotionProfileCompute(struct MotionProfile *profile, float time);
+
+
 #endif

@@ -38,7 +38,8 @@
 #include "MotionProfile.h"
 #endif
 
-void MotionProfileInit(struct MotionProfile *profile, float distance)
+// Load defaults for motion profile
+void MotionProfileInit(struct MotionProfile *profile)
 {
 	profile->acceleration = 1;
 	profile->deceleration = 1;
@@ -47,15 +48,17 @@ void MotionProfileInit(struct MotionProfile *profile, float distance)
 	profile->maxVelocity = 10;
 	profile->endVelocity = 0;
 
-	profile->distance = distance;
+	profile->distance = 1;
 }
 
+// Set Acceleration for Motion Profile
 void MotionProfileSetAccel(struct MotionProfile *profile, float accel, float decel)
 {
 	profile->acceleration = accel;
 	profile->deceleration = decel;
 }
 
+// Set Velocity for Motion Profile
 void MotionProfileSetVelocity(struct MotionProfile *profile, float enterVel, float maxVel, float exitVel)
 {
 	profile->startVelocity = enterVel;
@@ -63,6 +66,7 @@ void MotionProfileSetVelocity(struct MotionProfile *profile, float enterVel, flo
 	profile->endVelocity = exitVel;
 }
 
+// Set Distance for Motion Profile
 void MotionProfileSetDistance(struct MotionProfile *profile, float distance)
 {
 	profile->distance = distance;
@@ -94,7 +98,7 @@ float MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
 
 	// Perform Quadratic formula
 	// Explanation:
-	// We need to find the time at which the acceleration and deceleration change over
+	// We need to find the time at which the acceleration and deceleration switch over
 	// So we know we will travel s0(distance) when accelerating and s1(distance) when decelerating
 	// We will denote the time of the change-over as t
 	// From kinematics:
@@ -134,28 +138,89 @@ float MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
   return option1;
 }
 
+// Determines if the motion profile is complete
+// This is a copy/paste of the MotionProfileCompute function, just return functions
+// return true/false.  Probably could be optimized at some point.
+bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
+{
+	// Current velocity(if max velocity didn't exist)
+	float vel1 = profile->startVelocity + profile->acceleration * time;
+
+	// Determine at best case, when we would change from acceleration to deceleration
+	float timeToExchange = MotionProfileDetermineExchangeTime(profile);
+	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange;
+
+	// Check to see if this profile will reach max velocity or not
+	if(velocityAtExchange < profile->maxVelocity)
+	{
+		// Check if the profile is still accelerating
+		if(timeToExchange > time)
+			return false;
+
+		float timeToDecelerate = (abs(profile->endVelocity - velocityAtExchange)) / profile->deceleration;
+
+		if(time > timeToDecelerate + timeToExchange)
+			return true;
+	  else
+			return false;
+	}
+	else
+	{
+		// How long does it take to accelerate to max speed
+  	float timeToMaxVel = (profile->maxVelocity - profile->startVelocity) / (profile->acceleration);
+
+		// Calculate distance at current velocity
+		float distanceToStop = (vel1 * vel1 - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
+		float distanceSoFar = profile->startVelocity * time + 0.5 * profile->acceleration*time*time;
+
+		// If the profile reached max speed
+		if(timeToMaxVel < time)
+		{
+			// Calculate distance at maxVelocity
+			float distanceFromAcceleration = profile->startVelocity * timeToMaxVel + 0.5 * profile->acceleration*timeToMaxVel*timeToMaxVel;
+		  float distanceFromMaxVel = profile->maxVelocity * (time - timeToMaxVel);
+			float distanceSoFar = distanceFromAcceleration + distanceFromMaxVel;
+			float distanceToStop = (profile->maxVelocity * profile->maxVelocity - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
+
+			// Calculate how far we stay at max velocity
+			float distanceAtMaxVelocity = profile->distance - distanceFromAcceleration - distanceToStop;
+			float timeWithMax = distanceAtMaxVelocity / profile->maxVelocity;
+
+			if(distanceSoFar + distanceToStop < profile->distance)
+			{
+				return false;
+			}
+		  else
+		  {
+		  	// Time offset to the point we started to decelerate
+		  	float decelTime = time - timeWithMax - timeToMaxVel;
+		  	float timeToDecelerate = abs((profile->endVelocity - profile->maxVelocity) / (profile->deceleration));
+
+		  	if(time > timeToMaxVel + timeWithMax + timeToDecelerate)
+		  		return true;
+			  else
+					return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return false;
+}
+
 // Computes the appropriate velocity at a certain point of time
 float MotionProfileCompute(struct MotionProfile *profile, float time)
 {
 	// Current velocity(if max velocity didn't exist)
 	float vel1 = profile->startVelocity + profile->acceleration * time;
 
-	// How long does it take to accelerate to max speed
-  float timeToMaxVel = (profile->maxVelocity - profile->startVelocity) / (profile->acceleration);
-
-	// Calculate distance at current velocity
-	float distanceToStop = (vel1 * vel1 - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
-	float distanceSoFar = profile->startVelocity * time + 0.5 * profile->acceleration*time*time;
-
-	// Return vel1 if in the acceleration phase
-	if(timeToMaxVel > time && distanceToStop + distanceSoFar < profile->distance)
-		return vel1;
-
 	// Determine at best case, when we would change from acceleration to deceleration
 	float timeToExchange = MotionProfileDetermineExchangeTime(profile);
 	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange;
 
-	// If velocity never reaches maxVelocity
+	// Check to see if this profile will reach max velocity or not
 	if(velocityAtExchange < profile->maxVelocity)
 	{
 		// Check if the profile is still accelerating
@@ -171,6 +236,13 @@ float MotionProfileCompute(struct MotionProfile *profile, float time)
 	}
 	else
 	{
+		// How long does it take to accelerate to max speed
+  	float timeToMaxVel = (profile->maxVelocity - profile->startVelocity) / (profile->acceleration);
+
+		// Calculate distance at current velocity
+		float distanceToStop = (vel1 * vel1 - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
+		float distanceSoFar = profile->startVelocity * time + 0.5 * profile->acceleration*time*time;
+
 		// If the profile reached max speed
 		if(timeToMaxVel < time)
 		{
