@@ -41,7 +41,7 @@
 struct PID
 {
     // This is the general error value
-  // Increase this when you want the response to try to overshoot more
+  	// Increase this when you want the response to try to overshoot more
     float kP;
 
     // This is the integral value (usually recommended to be left zero)

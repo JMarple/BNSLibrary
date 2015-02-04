@@ -41,7 +41,7 @@
 #define __BNS_KALMAN_FILTER_H
 
 #ifndef __BNS_MATRIX_H
-#include "..\Matrix\BNSMatrix.h"
+#include "..\Core\Matrix\BNSMatrix.h"
 #endif
 
 struct KalmanFilter

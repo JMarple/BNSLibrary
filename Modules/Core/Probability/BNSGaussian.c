@@ -41,7 +41,7 @@
 #include "../Matrix/BNSMatrix.h"
 #endif
 #ifndef __BNS_GAUSSIAN_H
-#include "Gaussian.h"
+#include "BNSGaussian.h"
 #endif
 
 // Initialize basic values for a gaussian

@@ -1,12 +1,12 @@
-// SimpleKalmanFilterExample.c
+// MotionProfileExample.c
 //
 // Author: Justin Marple with Team BNS
 // Contact: jmarple@umass.edu
-// Date: 2/2/2014
+// Date: 2/3/2015
 //
 // This example file shows how to use
-// the kalman filter included in the
-// BNSLibrary
+// the Motion Profile built into the
+// BNS Library
 //
 // Dependencies:
 //   BNSLib.h in previous directory
@@ -28,23 +28,25 @@
 // The author can be contacted by email at jmarple@umass.edu
 //
 // ------------------------------------------------------------------------
-
 #include "..\BNSLib.h"
 
 task main()
 {
-  // Initiate BNS Library
+  // Initialize the BNS Library
   BNS();
 
-  // Create a Simple KalmanFilter with an update every 0.1 seconds
-  KalmanFilter filter1;
-  SimpleKalmanInit(&filter1, 0.1);
+  // Motion Profile Constants
+  MotionProfile prof1;
 
-  for(int i = 0; i <= 10; i++)
+  // Initiate the motion profile with a distance of 0
+  MotionProfileInit(&prof1, 1000);
+  MotionProfileSetAccel(&prof1, 0.5, 1); // Accel = 0.5, decel = 1
+  MotionProfileSetVelocity(&prof1, 0, 25, 0); // V_0 = 0, V_max = 25, V_exit = 0
+
+  for(int time = 0; time < 100; time++)
   {
-  	// This inputs our data "i" and shows how
-    	//  the kalman filter reacts
-  	float result = SimpleKalmanUpdate(&filter1, i);
-  	writeDebugStreamLine("Result = %f", result);
+  	float velocity = MotionProfileCompute(&prof1, time);
+  	writeDebugStreamLine("%f", velocity);
   }
+
 }

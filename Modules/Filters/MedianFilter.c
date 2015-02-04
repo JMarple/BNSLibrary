@@ -45,7 +45,7 @@
 #include "MedianFilter.h"
 #endif
 #ifndef __BNS_MATRIX_H
-#include "..\Matrix\BNSMatrix.h"
+#include "..\Core\Matrix\BNSMatrix.h"
 #endif
 
 // Initialize the filter's data vector

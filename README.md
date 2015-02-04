@@ -69,3 +69,4 @@ Median Filter Basics:
  - V0.13.0: DynamicArray & Stack Data Structures Added. Added PID Integral functions.  
  - V0.13.3: BNSMatrix changed to use DynamicArray.  Significant bug found where uninitialized structs could seen as initialized. 
  - V0.14.0: SimpleKalmanFilter created.  CircularBuffer added as a data structure.
+ - V0.15.0: Added MotionProfile Controller. 

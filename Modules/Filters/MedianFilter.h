@@ -40,7 +40,7 @@
 #define __BNS_MEDIAN_FILTER_H
 
 #ifndef __BNS_MATRIX_H
-#include "..\Matrix\BNSMatrix.h"
+#include "..\Core\Matrix\BNSMatrix.h"
 #endif
 
 // Simple Median Filter structure for keeping track

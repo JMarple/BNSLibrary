@@ -46,9 +46,12 @@
   #include "Modules\Core\Matrix\BNSMatrix.c"
   #include "Modules\Core\Matrix\BNSMatrixArithmetic.c"
   #include "Modules\Core\Matrix\BNSMatrixScalar.c"
-  #include "Modules\Filters\PIDController.c"
   #include "Modules\Core\BNSDataStructures.c"
-  #include "Modules\Core\Probability\Gaussian.c"
+  #include "Modules\Core\Probability\BNSGaussian.c"
+
+  // Control
+  #include "Modules\Control\PIDController.c"
+  #include "Modules\COntrol\MotionProfile.c"
 
   // Features
   #include "Modules\Filters\KalmanFilter.c"
