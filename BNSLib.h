@@ -51,7 +51,8 @@
 
   // Control
   #include "Modules\Control\PIDController.c"
-  #include "Modules\COntrol\MotionProfile.c"
+	#include "Modules\Control\MotionProfileComputation.c"
+  #include "Modules\Control\MotionProfile.c"
 
   // Features
   #include "Modules\Filters\KalmanFilter.c"

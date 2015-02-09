@@ -42,13 +42,18 @@ task main()
   MotionProfileInit(&prof1);
   MotionProfileSetAccel(&prof1, 0.5, 1); // Accel = 0.5, decel = 1
   MotionProfileSetDistance(&prof1, 1000); // Distance = 1000
-  MotionProfileSetVelocity(&prof1, 0, 25, 0); // V_0 = 0, V_max = 25, V_exit = 0
+  MotionProfileSetVelocity(&prof1, 12, 15, 12); // V_0 = 0, V_max = 25, V_exit = 0
 
+  // "Execute" motion profile by printing the velocities to the screen
   float time = 0;
+  float dt = 1.0; // Update rate: in this instance once per second
   while(!MotionProfileIsComplete(&prof1, time))
 	{
   	float velocity = MotionProfileCompute(&prof1, time);
   	writeDebugStreamLine("%f", velocity);
-		time++;
+		time+=dt;
+		delay(2);
   }
+
+  writeDebugStreamLine("Done! :)");
 }
