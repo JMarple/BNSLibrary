@@ -66,67 +66,27 @@ void MotionProfileSetVelocity(struct MotionProfile *profile, float enterVel, flo
 // Set Distance for Motion Profile
 void MotionProfileSetDistance(struct MotionProfile *profile, float distance)
 {
-	profile->distance = abs(distance);
-}
-
-// Forces all velocities to be positive
-float MotionProfileCreateOffset(struct MotionProfile *profile)
-{
-	float smallest = profile->startVelocity;
-	if(profile->maxVelocity < smallest)
-		smallest = profile->maxVelocity;
-	if(profile->endVelocity < smallest)
-		smallest = profile->endVelocity;
-
-	profile->startVelocity-=smallest;
-	profile->maxVelocity-=smallest;
-	profile->endVelocity-=smallest;
-
-	return smallest;
+	profile->distance = distance;
 }
 
 // Determines if the motion profile is complete
 bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
 {
-	float offset = MotionProfileCreateOffset(profile);
+	float velocity = MotionProfileCompute(profile, time);
 
-	// Are we accelerating forward or backwards?
-  float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
+	if(velocity == BNS_ERROR_CODE)
+		return true;
 
-	// Determine at best case, when we would change from acceleration to deceleration
-	float timeToExchange = MotionProfileDetermineExchangeTime(profile);
-	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange * dir;
+	if(velocity == profile->endVelocity && time > profile->_timeToExchange)
+		return true;
 
-	bool returnValue;
-
-	// If true, this profile will not reach max velocity
-	if(velocityAtExchange*dir < profile->maxVelocity*dir)
-	{
-		float vel = MotionProfileGetVelocityWithoutMaxVelocity(profile, time);
-		if(vel == profile->endVelocity && time > timeToExchange)
-			returnValue = true;
-		else
-			returnValue = false;
-	}
-	else
-	{
-		float vel = MotionProfileGetVelocityWithMaxVelocity(profile, time);
-		if(vel == profile->endVelocity && time > timeToExchange)
-			returnValue = true;
-		else
-			returnValue = false;
-	}
-
-	profile->maxVelocity += offset;
-	profile->startVelocity += offset;
-	profile->endVelocity += offset;
-
-	return returnValue;
+	return false;
 }
 
 // Computes the appropriate velocity at a certain point of time
 float MotionProfileCompute(struct MotionProfile *profile, float time)
 {
+	// Make all velocities positive
 	float offset = MotionProfileCreateOffset(profile);
 
 	// Are we accelerating forward or backwards?
@@ -135,6 +95,8 @@ float MotionProfileCompute(struct MotionProfile *profile, float time)
 	// Determine at best case, when we would change from acceleration to deceleration
 	float timeToExchange = MotionProfileDetermineExchangeTime(profile);
 	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange * dir;
+
+	profile->_timeToExchange = timeToExchange;
 
 	// This is the value the program will return for velocity
 	float returnVelocity = -1;
@@ -149,11 +111,7 @@ float MotionProfileCompute(struct MotionProfile *profile, float time)
 		returnVelocity = MotionProfileGetVelocityWithMaxVelocity(profile, time);
 	}
 
-	profile->maxVelocity += offset;
-	profile->startVelocity += offset;
-	profile->endVelocity += offset;
-
-	return returnVelocity + offset;
+	return returnVelocity;
 }
 
 // Prints what the motion profile will execute.  Set dt to what your time scale is

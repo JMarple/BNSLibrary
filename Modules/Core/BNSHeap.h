@@ -46,6 +46,9 @@
 // Note: This is not currently being used to due to negative numbers
 #define MEM_PROT_BIT 21
 
+// Some unlikely number that can be returned as an error code..
+#define BNS_ERROR_CODE 98440582048.3824589
+
 #ifndef __BNS_LIB_H
 #include "../BNSLib.h"
 #endif

@@ -7,30 +7,17 @@
 #include "MotionProfile.h"
 #endif
 
-
 // This determines the time where, without maxVelocity, the profile changes over
 //  from acceleration to deceleration
 float MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
 {
 	float accel = profile->acceleration;
-	float decel = -profile->deceleration;
+	float decel = profile->deceleration;
 
 	float veli = profile->startVelocity;
 	float vele = profile->endVelocity;
 
 	float distance = profile->distance;
-
-	// Check for valid variables
-	if(accel <= 0)
-	{
-		BNS_ERROR("MOTION PROFILE", "profile->acceleration cannot be <= 0");
-		return 0;
-	}
-	if(decel > 0)
-  {
-		BNS_ERROR("MOTION PROFILE", "profile->deceleration cannot be <= 0");
-		return 0;
-	}
 
 	// Perform Quadratic formula
 	// Explanation:
@@ -53,8 +40,8 @@ float MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
 	float squareTerm = b*b - 4*a*c;
 	if(squareTerm < 0)
 	{
-		BNS_ERROR("MOTION PROFILE", "NEGATIVE SQUARE ROOT ERROR");
-    return -1;
+		BNS_ERROR("MOTION PROFILE ERROR", "IMPOSSIBLE TO REACH LOCATION");
+    return BNS_ERROR_CODE;
   }
 
   // Choose the option that comes out positive
@@ -74,63 +61,93 @@ float MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
   return option1;
 }
 
+// Forces all velocities to be positive
+float MotionProfileCreateOffset(struct MotionProfile *profile)
+{
+	float smallest = profile->startVelocity;
+	if(profile->maxVelocity < smallest)
+		smallest = profile->maxVelocity;
+	if(profile->endVelocity < smallest)
+		smallest = profile->endVelocity;
+
+	return smallest;
+}
+
 float MotionProfileGetVelocityWithoutMaxVelocity(struct MotionProfile *profile, float time)
 {
 	// Are we accelerating forward or backwards?
-  float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
+  // float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
 
 	// Current velocity(if max velocity didn't exist)
-	float vel1 = profile->startVelocity + profile->acceleration * time * dir;
+	float vel1 = profile->startVelocity + profile->acceleration * time;
 
 	// Determine at best case, when we would change from acceleration to deceleration
 	float timeToExchange = MotionProfileDetermineExchangeTime(profile);
-	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange * dir;
+	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange;
+
+	// Report possible errors
+	if(timeToExchange == BNS_ERROR_CODE)
+		return BNS_ERROR_CODE;
+
+  //writeDebugStreamLine("timeToExchange = %f", timeToExchange);
+	//writeDebugStreamLine("velocityAtExchange = %f", velocityAtExchange);
+
+	double returnVelocity = -1;
 
 	// Still accelerating to velocityAtExchange?
 	if(timeToExchange > time)
 	{
-		return vel1;
+		returnVelocity = vel1;
 	}
 	else
 	{
-		float timeToDecelerate = (profile->endVelocity - velocityAtExchange) / profile->deceleration * -dir;
+		float timeToDecelerate = (profile->endVelocity - velocityAtExchange) / profile->deceleration;
 
 		if(time > timeToDecelerate + timeToExchange)
-			return profile->endVelocity;
+			returnVelocity = profile->endVelocity;
 	  else
-			return velocityAtExchange - profile->deceleration * (time - timeToExchange) * dir;
+			returnVelocity = velocityAtExchange + profile->deceleration * (time - timeToExchange);
 	}
+
+	return returnVelocity;
 }
 
 float MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, float time)
 {
-  // Are we accelerating forward or backwards?
-  float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
-
 	// Current velocity(if max velocity didn't exist)
-	float vel1 = profile->startVelocity + profile->acceleration * time * dir;
+	float vel1 = profile->startVelocity + profile->acceleration * time;
 
 	// How long does it take to accelerate to max speed
-	float timeToMaxVel = (profile->maxVelocity - profile->startVelocity) / (profile->acceleration)*dir;
+	float timeToMaxVel = (profile->maxVelocity - profile->startVelocity) / (profile->acceleration);
 
 	// Calculate distance at current velocity
-	float distanceToStop = (vel1 * vel1 - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration)*dir;
-	float distanceSoFar = profile->startVelocity * time + 0.5 * profile->acceleration*time*time*dir;
+	//float distanceToStop = (vel1 * vel1 - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
+	float distanceSoFar = profile->startVelocity * time + 0.5 * profile->acceleration*time*time;
+
+	// Calculate distance at maxVelocity
+	float distanceFromAcceleration = profile->startVelocity * timeToMaxVel + 0.5 * profile->acceleration*timeToMaxVel*timeToMaxVel;
+  float distanceFromMaxVel = profile->maxVelocity * (time - timeToMaxVel);
+	float distanceSoFarWithMax = distanceFromAcceleration + distanceFromMaxVel;
+
+	float timeToStop = (profile->endVelocity - profile->maxVelocity) / (profile->deceleration);
+	float distanceToStop = profile->maxVelocity*timeToStop + 0.5 * profile->deceleration * timeToStop * timeToStop; //(profile->maxVelocity * profile->maxVelocity - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
+
+	// Calculate how far we stay at max velocity
+	float distanceAtMaxVelocity = profile->distance - distanceFromAcceleration - distanceToStop;
+	float timeWithMax = distanceAtMaxVelocity / profile->maxVelocity;
+
+	// Report possible errors
+	float timeToExchange = MotionProfileDetermineExchangeTime(profile);
+	if(timeToExchange == BNS_ERROR_CODE)
+		return BNS_ERROR_CODE;
 
 	// If the profile reached max speed
 	if(timeToMaxVel < time)
 	{
-		// Calculate distance at maxVelocity
-		float distanceFromAcceleration = profile->startVelocity * timeToMaxVel + 0.5 * profile->acceleration*timeToMaxVel*timeToMaxVel;
-	  float distanceFromMaxVel = profile->maxVelocity * (time - timeToMaxVel);
-		float distanceSoFar = distanceFromAcceleration + distanceFromMaxVel;
-		float distanceToStop = (profile->maxVelocity * profile->maxVelocity - profile->endVelocity * profile->endVelocity) / (2.0 * profile->deceleration);
+		//writeDebugStreamLine("distanceSoFarWIthMax = %f", distanceSoFarWithMax);
+		//writeDebugStreamLine("distanceToStopAtMax = %f", distanceToStop);
 
-		// Calculate how far we stay at max velocity
-		float distanceAtMaxVelocity = profile->distance - distanceFromAcceleration - distanceToStop;
-		float timeWithMax = distanceAtMaxVelocity / profile->maxVelocity;
-
-		if(distanceSoFar + distanceToStop < profile->distance)
+		if(distanceSoFarWithMax + distanceToStop < profile->distance)
 		{
 			return profile->maxVelocity;
 		}
@@ -138,16 +155,16 @@ float MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, flo
 	  {
 	  	// Time offset to the point we started to decelerate
 	  	float decelTime = time - timeWithMax - timeToMaxVel;
-	  	float timeToDecelerate = abs((profile->endVelocity - profile->maxVelocity) / (profile->deceleration));
 
-	  	if(time > timeToMaxVel + timeWithMax + timeToDecelerate)
+	  	if(time > timeToMaxVel + timeWithMax + timeToStop)
 	  		return profile->endVelocity;
 		  else
-				return profile->maxVelocity - profile->deceleration * decelTime;
+				return profile->maxVelocity + profile->deceleration * decelTime;
 		}
 	}
 	else
 	{
+		// Still accelerating to max velocity
 		return vel1;
 	}
 }

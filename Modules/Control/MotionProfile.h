@@ -45,6 +45,8 @@ struct MotionProfile
 	float endVelocity;
 
 	float distance;
+
+	float _timeToExchange;
 };
 
 // MotionProfileInit(...)
