@@ -73,10 +73,10 @@ void MotionProfileSetDistance(struct MotionProfile *profile, float distance)
 bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
 {
 	// Are we accelerating forward or backwards?
-  float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
+	float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
 
-  // Check parameters for mistakes..
-  _MotionProfileCheckParameters(profile);
+	// Check parameters for mistakes..
+	_MotionProfileCheckParameters(profile);
 
 	// Determine at best case, when we would change from acceleration to deceleration
 	float timeToExchange = _MotionProfileDetermineExchangeTime(profile);
@@ -107,10 +107,10 @@ bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
 float MotionProfileCompute(struct MotionProfile *profile, float time)
 {
 	// Are we accelerating forward or backwards?
-  float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
+	float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
 
-    // Check parameters for mistakes..
-  _MotionProfileCheckParameters(profile);
+	// Check parameters for mistakes..
+	_MotionProfileCheckParameters(profile);
 
 	// Determine at best case, when we would change from acceleration to deceleration
 	float timeToExchange = _MotionProfileDetermineExchangeTime(profile);
@@ -152,14 +152,14 @@ void MotionProfileEasyParams(struct MotionProfile* profile, float accel, float s
 void MotionProfilePrint(struct MotionProfile* profile, float dt)
 {
 	// "Execute" motion profile
-  float time = 0;
-  while(!MotionProfileIsComplete(profile, time))
+	float time = 0;
+	while(!MotionProfileIsComplete(profile, time))
 	{
-  	float velocity = MotionProfileCompute(profile, time);
-  	writeDebugStreamLine("%f", velocity);
+		float velocity = MotionProfileCompute(profile, time);
+		writeDebugStreamLine("%f", velocity);
 		time+=dt;
 		delay(2);
-  }
+	}
 }
 
 #endif

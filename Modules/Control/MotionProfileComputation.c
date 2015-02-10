@@ -1,3 +1,31 @@
+// MotionProfileComputation.c
+//
+// Author: Justin Marple with Team BNS
+// Contact: jmarple@umass.edu
+// Date: 2/10/2015
+//
+// This source file includes source code that
+// implements a Motion Controller for use in
+// Vex Robotics Competition.
+//
+// ------------------------------------------------------------------------
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// The author can be contacted by email at jmarple@umass.edu
+//
+// ------------------------------------------------------------------------
+
 #pragma systemFile
 
 #ifndef __BNS_MOTION_PROFILE_COMPUTATION_C
@@ -79,31 +107,31 @@ float _MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
 	if(squareTerm < 0)
 	{
 		BNS_ERROR("MOTION PROFILE ERROR", "IMPOSSIBLE TO REACH LOCATION");
-    return BNS_ERROR_CODE;
-  }
+		return BNS_ERROR_CODE;
+	}
 
-  // Acceleration must equal zero, so assume max velocity will
-  //  be immediately reached
-  if(a == 0)
-  {
-  	return 0;
-  }
+	// Acceleration must equal zero, so assume max velocity will
+	//  be immediately reached
+	if(a == 0)
+	{
+		return 0;
+	}
 
-  // Choose the option that comes out positive
-  float option1 = (-b + sqrt(squareTerm))/(2*a);
-  float option2 = (-b - sqrt(squareTerm))/(2*a);
+	// Choose the option that comes out positive
+	float option1 = (-b + sqrt(squareTerm))/(2*a);
+	float option2 = (-b - sqrt(squareTerm))/(2*a);
 
-  if(option1 > 0 && option2 < 0)
-  	return option1;
-  if(option2 > 0 && option1 < 0)
-  	return option2;
-  if(option1 < 0 && option2 < 0)
-  {
-  	BNS_ERROR("MOTION PROFILE", "BOTH TIME RESULTS ARE NEGATIVE");
-  	return 0;
-  }
+	if(option1 > 0 && option2 < 0)
+		return option1;
+	if(option2 > 0 && option1 < 0)
+		return option2;
+	if(option1 < 0 && option2 < 0)
+	{
+		BNS_ERROR("MOTION PROFILE", "BOTH TIME RESULTS ARE NEGATIVE");
+		return 0;
+	}
 
-  return option1;
+	return option1;
 }
 
 
@@ -136,7 +164,7 @@ float _MotionProfileGetVelocityWithoutMaxVelocity(struct MotionProfile *profile,
 			*isComplete = true;
 			returnVelocity = profile->endVelocity;
 		}
-	  else
+		else
 			returnVelocity = velocityAtExchange + profile->deceleration * (time - timeToExchange);
 	}
 
@@ -146,7 +174,7 @@ float _MotionProfileGetVelocityWithoutMaxVelocity(struct MotionProfile *profile,
 float _MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, float time, bool *isComplete)
 {
 	// Are we accelerating forward or backwards?
-  float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity || profile->endVelocity > profile->maxVelocity);
+	float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity || profile->endVelocity > profile->maxVelocity);
 
 	// Current velocity(if max velocity didn't exist)
 	float vel1 = profile->startVelocity + profile->acceleration * time;
@@ -160,7 +188,7 @@ float _MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, fl
 
 	// Calculate acceleration distance, current distance traveled at max velocity and distnace to stop
 	float distanceFromAcceleration = profile->startVelocity * timeToMaxVel + 0.5 * profile->acceleration*timeToMaxVel*timeToMaxVel;
-  float distanceFromMaxVel = profile->maxVelocity * (time - timeToMaxVel);
+	float distanceFromMaxVel = profile->maxVelocity * (time - timeToMaxVel);
 	float timeToStop = 0;
 	if(profile->deceleration != 0)// Check for divide by zero errors
 		timeToStop = (profile->endVelocity - profile->maxVelocity) / (profile->deceleration);
@@ -183,17 +211,17 @@ float _MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, fl
 		{
 			return profile->maxVelocity;
 		}
-	  else
-	  {
-	  	// Time offset to the point we started to decelerate
-	  	float decelTime = time - timeWithMax - timeToMaxVel;
+		else
+		{
+			// Time offset to the point we started to decelerate
+			float decelTime = time - timeWithMax - timeToMaxVel;
 
-	  	if(time > timeToMaxVel + timeWithMax + timeToStop)
-	  	{
-	  		*isComplete = true;
-	  		return profile->endVelocity;
-	  	}
-		  else
+			if(time > timeToMaxVel + timeWithMax + timeToStop)
+			{
+				*isComplete = true;
+				return profile->endVelocity;
+			}
+			else
 				return profile->maxVelocity + profile->deceleration * decelTime;
 		}
 	}
