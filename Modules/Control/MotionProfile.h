@@ -45,13 +45,15 @@ struct MotionProfile
 	float endVelocity;
 
 	float distance;
-
-	float _timeToExchange;
 };
 
 // MotionProfileInit(...)
 // Initate defaults for the motion profile
 void MotionProfileInit(struct MotionProfile *profile);
+
+// MotionProfileEasyParams(...)
+// Initiate simple params for the motion params
+void MotionProfileEasyParams(struct MotionProfile* profile, float accel, float speed, float distance);
 
 // MotionProfileSetDistance(...)
 // Sets the desired distance for the motion controller
