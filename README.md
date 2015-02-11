@@ -43,6 +43,23 @@ Stack Basics:
  - StackPop               (Stack *object)
  - StackPeek              (Stack *object)
  - StackIsEmpty           (Stack *object)
+
+Circular Buffer Basics:
+ - CircularBufferInit     (CircularBuffer *object, int size)
+ - CircularBufferIsEmpty  (CircularBuffer *object)
+ - CircularBufferIsFull   (CircularBuffer *object)
+ - CircularBufferSize     (CircularBuffer *object)
+ - CircularBufferAdd      (CircularBuffer *object, float value)
+ - CircularBufferGet      (CircularBuffer *object)
+
+Motion Profile Basics:
+ - MotionProfileInit      (MotionProfile *profile)
+ - MotionProfileSetAccel  (MotionProfile *profile, float accel, float decel)
+ - MotionProfileSetVelocity(MotionProfile *profile, float enterVel, float maxVel, float endVel)
+ - MotionProfileSetDistance(MotionProfile *profile, float distance)
+ - MotionProfileIsComplete(MotionProfile *profile, float time)
+ - MotionProfileCompute   (MotionProfile *profile, float time)
+ - MotionProfileEasyParams(MotionProfile *profile, float accel, float speed, float distance)
  
 PID Basics:
  - PIDInit                (PID *controller, float kP, float kI, float kD)
@@ -57,6 +74,10 @@ Kalman Filter Basics:
  - KalmanPredict          (KalmanFilter *kal)
  - KalmanUpdate           (KalmanFilter *kal, Matrix measurement)
  
+Simple Kalman Filter Basics:
+ - SimpleKalmanInit       (KalmanFilter *kal, double dt)
+ - SimpleKalmanUpdate     (KalmanFilter *kal, float data)
+
 Median Filter Basics:
  - MedianInit             (MedianFilter *filter, float size)
  - MedianAddData          (MedianFilter *filter, float data)
