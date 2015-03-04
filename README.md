@@ -1,4 +1,4 @@
-<h2>BNSLib V0.15.0</h2>
+<h2>BNSLib V0.15.1</h2>
 This library is designed to be an advanced library for Highschool and University Vex Robotics Teams.  It can be compiled on RobotC 4.27 (older versions may not compile correctly).  The library features several concepts:
  - Dynamic Memory Allocation
  - Complex Matrix Operations (+ - * /, deterimant, trace, and others)

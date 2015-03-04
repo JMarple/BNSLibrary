@@ -69,6 +69,17 @@ void MotionProfileSetDistance(struct MotionProfile *profile, float distance)
 	profile->distance = distance;
 }
 
+bool MotionProfileIsCompleteWithDistance(struct MotionProfile *profile, float distance)
+{
+		// Are we accelerating forward or backwards?
+	float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity);
+
+	if(profile->distance*dir < distance*dir)
+		return true;
+
+	return false;
+}
+
 // Determines if the motion profile is complete
 bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
 {
@@ -78,7 +89,7 @@ bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
 	// Check parameters for mistakes..
 	_MotionProfileCheckParameters(profile);
 
-	// Determine at best case, when we would change from acceleration to deceleration
+	// Determine at best case, when we would exchange from acceleration to deceleration
 	float timeToExchange = _MotionProfileDetermineExchangeTime(profile);
 	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange;
 
@@ -91,12 +102,12 @@ bool MotionProfileIsComplete(struct MotionProfile *profile, float time)
 	// If true, this profile will not reach max velocity
 	if(velocityAtExchange*dir < profile->maxVelocity*dir)
 	{
-		_MotionProfileGetVelocityWithoutMaxVelocity(profile, time, &isComplete);
+		_MotionProfileGetVelocityWithoutMaxVelocity(profile, time, false, 0, &isComplete);
 		return isComplete;
 	}
 	else
 	{
-		_MotionProfileGetVelocityWithMaxVelocity(profile, time, &isComplete);
+		_MotionProfileGetVelocityWithMaxVelocity(profile, time, false, 0, &isComplete);
 		return isComplete;
 	}
 
@@ -112,7 +123,7 @@ float MotionProfileCompute(struct MotionProfile *profile, float time)
 	// Check parameters for mistakes..
 	_MotionProfileCheckParameters(profile);
 
-	// Determine at best case, when we would change from acceleration to deceleration
+	// Determine at best case, when we would exchange from acceleration to deceleration
 	float timeToExchange = _MotionProfileDetermineExchangeTime(profile);
 	float velocityAtExchange = profile->startVelocity + profile->acceleration * timeToExchange;
 
@@ -122,11 +133,11 @@ float MotionProfileCompute(struct MotionProfile *profile, float time)
 	// If true, this profile will not reach max velocity
 	if(velocityAtExchange*dir < profile->maxVelocity*dir)
 	{
-		return _MotionProfileGetVelocityWithoutMaxVelocity(profile, time, &nullBool);
+		return _MotionProfileGetVelocityWithoutMaxVelocity(profile, time, false, 0, &nullBool);
 	}
 	else
 	{
-		return _MotionProfileGetVelocityWithMaxVelocity(profile, time, &nullBool);
+		return _MotionProfileGetVelocityWithMaxVelocity(profile, time, false, 0, &nullBool);
 	}
 }
 

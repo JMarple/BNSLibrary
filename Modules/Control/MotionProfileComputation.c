@@ -135,7 +135,7 @@ float _MotionProfileDetermineExchangeTime(struct MotionProfile *profile)
 }
 
 
-float _MotionProfileGetVelocityWithoutMaxVelocity(struct MotionProfile *profile, float time, bool *isComplete)
+float _MotionProfileGetVelocityWithoutMaxVelocity(struct MotionProfile *profile, float time, bool usingDistance, float distance, bool *isComplete)
 {
 	// Current velocity(if max velocity didn't exist)
 	float vel1 = profile->startVelocity + profile->acceleration * time;
@@ -171,7 +171,7 @@ float _MotionProfileGetVelocityWithoutMaxVelocity(struct MotionProfile *profile,
 	return returnVelocity;
 }
 
-float _MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, float time, bool *isComplete)
+float _MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, float time, bool usingDistance, float distance, bool *isComplete)
 {
 	// Are we accelerating forward or backwards?
 	float dir = 1 - 2*(profile->startVelocity > profile->maxVelocity || profile->endVelocity > profile->maxVelocity);
@@ -207,7 +207,11 @@ float _MotionProfileGetVelocityWithMaxVelocity(struct MotionProfile *profile, fl
 	// If the profile reached max speed
 	if(timeToMaxVel < time)
 	{
-		if((distanceFromAcceleration + distanceFromMaxVel + distanceToStop)*dir < profile->distance*dir)
+		if(!usingDistance && (distanceFromAcceleration + distanceFromMaxVel + distanceToStop)*dir < profile->distance*dir)
+		{
+			return profile->maxVelocity;
+		}
+		else if(usingDistance && (distance+distanceToStop) * dir < profile->distance*dir)
 		{
 			return profile->maxVelocity;
 		}
