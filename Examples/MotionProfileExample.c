@@ -55,14 +55,14 @@ task main()
 	// ADVANCED PARAMS SETTING:
 	//
 	// Forward:
-	// MotionProfileSetAccel(&prof1, 0.5, -1); // Accel = -0.5, decel = 1
-	// MotionProfileSetDistance(&prof1, 1200); // Distance = 1000
-	// MotionProfileSetVelocity(&prof1, 0, 15, 0); // V_0 = 0, V_max = 25, V_exit = 0
+	// MotionProfileSetAccel(&prof1, 0.5, -1); // Accel = 0.5, decel = -1
+	// MotionProfileSetDistance(&prof1, 1200); // Distance = 1200
+	// MotionProfileSetVelocity(&prof1, 0, 15, 0); // V_0 = 0, V_max = 15, V_exit = 0
 	//
 	// Backward:
-	// MotionProfileSetAccel(&prof1, -0.5, 1); // Accel = 0.5, decel = -1
-	// MotionProfileSetDistance(&prof1, -1200); // Distance = -1000
-	// MotionProfileSetVelocity(&prof1, 0, -15, 0); // V_0 = 0, V_max = 25, V_exit = 0
+	// MotionProfileSetAccel(&prof1, -0.5, 1); // Accel = -0.5, decel = 1
+	// MotionProfileSetDistance(&prof1, -1200); // Distance = -1200
+	// MotionProfileSetVelocity(&prof1, 0, -15, 0); // V_0 = 0, V_max = -15, V_exit = 0
 	//
 	// SIMPLE PARAMS SETTING:
 	//
