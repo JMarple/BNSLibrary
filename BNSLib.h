@@ -50,6 +50,7 @@
   #include "Modules\Core\Probability\BNSGaussian.c"
 
   // Control
+	#include "Modules\Control\RobotData.c"
   #include "Modules\Control\PIDController.c"
 	#include "Modules\Control\MotionProfileComputation.c"
   #include "Modules\Control\MotionProfile.c"
@@ -60,6 +61,9 @@
 
   // Simple Interfaces
   #include "Modules\Simple\SimpleKalmanFilter.c"
+
+  // Vex Specific
+	#include "Modules\Vex\MotorControl.c"
 
 #elif COMPILER == cGCC
 
