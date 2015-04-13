@@ -51,7 +51,7 @@
 #endif
 
 // Returns an element in the buffer
-float bnsGetHeapElement(int element)
+int32_t bnsGetHeapElement(int element)
 {
   // Since our "0" element marks the size
   //  of the chunk size, we have to increment
@@ -60,7 +60,7 @@ float bnsGetHeapElement(int element)
 }
 
 // Sets an element in the heap
-bool bnsSetHeapElement(int element, float value)
+bool bnsSetHeapElement(int element, int32_t value)
 {
   if(element < sizeof(bnsHeap) / sizeof(bnsHeap[0]))
   {

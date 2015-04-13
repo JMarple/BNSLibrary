@@ -110,7 +110,7 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
     {
       array->pointer = res;
       array->maxSize *= 2;
-      bnsSetHeapElement(array->pointer + array->size, value);
+      bnsSetHeapElement(array->pointer + array->size, (int32_t)*(&value));
       array->size++;
     }
     else
@@ -133,7 +133,9 @@ void DynamicArraySet(struct DynamicArray *array, int where, float value)
 		if(where >= array->size)
 			array->size = where+1;
 
-		bnsSetHeapElement(array->pointer + where, value);
+		intptr_t* fPtr = &value;
+
+		bnsSetHeapElement(array->pointer + where, (int32_t)*fPtr);
 	}
 }
 
@@ -169,7 +171,8 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
 // Retrivies a point of memory from the array
 float DynamicArrayGet(struct DynamicArray *array, int where)
 {
-  return bnsGetHeapElement(array->pointer + where);
+	float* fPtr = (float*)&bnsGetHeapElement(array->pointer + where);
+  return (float)(*fPtr);
 }
 
 // Removes a certain element from the array

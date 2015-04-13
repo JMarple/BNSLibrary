@@ -28,59 +28,30 @@
 #ifndef __BNS_LIB_H
 #define __BNS_LIB_H
 
-// Compilers (make a new instance for your specific use case)
-#define cROBOTC 0
-#define cGCC    1
+// Core
+#include "Modules\Core\BNS_CLibrary.h"
+#include "Modules\Core\BNSHeap.c"
+#include "Modules\Core\BNSCore.c"
+#include "Modules\Core\Matrix\BNSMatrix.c"
+#include "Modules\Core\Matrix\BNSMatrixArithmetic.c"
+#include "Modules\Core\Matrix\BNSMatrixScalar.c"
+#include "Modules\Core\BNSDataStructures.c"
+#include "Modules\Core\Probability\BNSGaussian.c"
 
-// --------------------------
-// Set which compiler to use
-#define COMPILER cROBOTC
-// --------------------------
+// Control
+#include "Modules\Control\RobotData.c"
+#include "Modules\Control\PIDController.c"
+#include "Modules\Control\MotionProfileComputation.c"
+#include "Modules\Control\MotionProfile.c"
 
-// ROBOTC compiling
-#if COMPILER == cROBOTC
+// Features
+#include "Modules\Filters\KalmanFilter.c"
+#include "Modules\Filters\MedianFilter.c"
 
-  // Core
-  #include "Modules\Core\BNSHeap.c"
-  #include "Modules\Core\BNSCore.c"
-  #include "Modules\Core\Matrix\BNSMatrix.c"
-  #include "Modules\Core\Matrix\BNSMatrixArithmetic.c"
-  #include "Modules\Core\Matrix\BNSMatrixScalar.c"
-  #include "Modules\Core\BNSDataStructures.c"
-  #include "Modules\Core\Probability\BNSGaussian.c"
+// Simple Interfaces
+#include "Modules\Simple\SimpleKalmanFilter.c"
 
-  // Control
-	#include "Modules\Control\RobotData.c"
-  #include "Modules\Control\PIDController.c"
-	#include "Modules\Control\MotionProfileComputation.c"
-  #include "Modules\Control\MotionProfile.c"
-
-  // Features
-  #include "Modules\Filters\KalmanFilter.c"
-  #include "Modules\Filters\MedianFilter.c"
-
-  // Simple Interfaces
-  #include "Modules\Simple\SimpleKalmanFilter.c"
-
-  // Vex Specific
-	#include "Modules\Vex\MotorControl.c"
-
-#elif COMPILER == cGCC
-
-  #include <stdbool.h>
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <time.h>
-
-  // Rename several functions for the GCC compiler to interupt
-  #define srand(nSysTime); time_t t;srand((unsigned)time(&t));
-  #define writeDebugStreamLine printf("");printf
-  #define writeDebugStream printf
-
-  #include "Modules\Core\BNSCore.h"
-  #include "Modules\Core\BNSHeap.h"
-  #include "Modules\Core\Matrix\BNSMatrix.h"
-
-#endif
+// Vex Specific
+#include "Modules\Vex\MotorControl.c"
 
 #endif

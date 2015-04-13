@@ -58,7 +58,7 @@
 #endif
 
 // Global variable that matricies call to
-float bnsHeap[BUFFER_SIZE];
+int32_t bnsHeap[BUFFER_SIZE];
 
 // initMemory(...)
 // Set Default values for the heap
@@ -83,13 +83,13 @@ void bnsDefrag();
 
 // bnsGetHeapElement(...)
 // This returns the element at a memory location
-float bnsGetHeapElement(int element);
+int32_t bnsGetHeapElement(int element);
 
 // bnsSetHeapElement(...)
 // This sets the element at a memory location
 // Note: this is prone to heap corruption if you
 //  write to an incorrect memory location!
-bool bnsSetHeapElement(int element, float value);
+bool bnsSetHeapElement(int element, int32_t value);
 
 // bnsPrintMemory(...)
 // Prints the memory contents from memory location start to end
