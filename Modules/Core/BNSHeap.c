@@ -59,6 +59,13 @@ int32_t bnsGetHeapElement(int element)
   return bnsHeap[element+1];
 }
 
+// Returns the memory location of a certain element
+intptr_t bnsGetHeapElementMemory(int element)
+{
+	intptr_t* x = &bnsHeap + element + 1;
+	return x;
+}
+
 // Sets an element in the heap
 bool bnsSetHeapElement(int element, int32_t value)
 {

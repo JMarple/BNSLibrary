@@ -37,7 +37,7 @@ task main()
   // Initialize the dynamic array
   writeDebugStreamLine("\nDynamic Array Example: Adding elements to array");
   DynamicArray arr1;
-  DynamicArrayInit(&arr1);
+  DynamicArrayInit(&arr1, float);
 
   for(int i = 0; i < 5; i++)
   {
@@ -50,7 +50,16 @@ task main()
 
   // Display all the element in the array
   for(int i = 0; i < DynamicArraySize(&arr1); i++)
-  	writeDebugStreamLine("Element at %d is %d", i, DynamicArrayGet(&arr1, i));
+  {
+  	float* x = DynamicArrayGet(&arr1, i);
+  	writeDebugStreamLine("Element at %d is %d", i, *x);
+	}
+
+	writeDebugStreamLine("\nDynamic Arraay Struct Example: Adding elements to array");
+	DynamicArray arr2;
+	DynamicArrayInit(&arr1, Stack);
+
+
 
   // Initilize the stack
   writeDebugStreamLine("\nStack Example: Pushing/Popping 5, 45, and 88 to the stack");

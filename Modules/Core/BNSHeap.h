@@ -39,12 +39,12 @@
 #define BUFFER_SIZE 1000
 
 // Bit that defines if a chunk of space is free or not
-#define MEM_FREE_BIT 20
+#define MEM_FREE_BIT 30
 
 // Bit that defines if a point in memory defines a
 //  chunk or not.  Don't overwite if it is!
 // Note: This is not currently being used to due to negative numbers
-#define MEM_PROT_BIT 21
+#define MEM_PROT_BIT 31
 
 // Some unlikely number that can be returned as an error code
 // Binary equivilant is:
@@ -84,6 +84,10 @@ void bnsDefrag();
 // bnsGetHeapElement(...)
 // This returns the element at a memory location
 int32_t bnsGetHeapElement(int element);
+
+// bnsGetHeapElementMemory(...)
+// This returns the memory location of a certain element
+intptr_t bnsGetHeapElementMemory(int element);
 
 // bnsSetHeapElement(...)
 // This sets the element at a memory location

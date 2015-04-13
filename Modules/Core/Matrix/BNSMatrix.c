@@ -53,6 +53,9 @@
 #ifndef __BNS_CORE_H
 #include "../BNSCore.h"
 #endif
+#ifndef __BNS_DATA_STRUCTURES_H
+#include "../BNSDataStructures.h"
+#endif
 
 // Obtain space for a matrix filled with all zeros
 void CreateZerosMatrix(struct Matrix *mat, int m, int n)
@@ -64,7 +67,7 @@ void CreateZerosMatrix(struct Matrix *mat, int m, int n)
   mat->n = n;
 
   // Reserve memory for the array
-  DynamicArrayInitDefault(&mat->array, m*n);
+  DynamicArrayInitDefault(&mat->array, float, m*n);
 
   // Initalize to all zeros
   for(i = 0; i < m; i++)
@@ -82,7 +85,7 @@ void CreateIdentityMatrix(struct Matrix* mat, int n)
   mat->n = n;
 
   // Reserve memory for the array
-  DynamicArrayInitDefault(&mat->array, n*n);
+  DynamicArrayInitDefault(&mat->array, float, n*n);
 
   // Initialize with 1's on the main diagonal
   for(i = 0; i < n; i++)
@@ -175,7 +178,7 @@ bool ParseMatrixString(struct Matrix* mat, char* s)
   mat->n = cols;
 
    // Reserve memory for the array
-  DynamicArrayInitDefault(&mat->array, rows*cols);
+  DynamicArrayInitDefault(&mat->array, float, rows*cols);
 
   return true;
 }
@@ -271,7 +274,8 @@ void SetMatrixAt(struct Matrix *mat, int m, int n, float value)
 // Get an element in a matrix given m-down and n-across
 float GetMatrixAt(struct Matrix *mat, int m, int n)
 {
-	return DynamicArrayGet(mat->array, mat->n * m + n);
+	float* x = (float*)(DynamicArrayGet(mat->array, mat->n * m + n));
+	return *x;
 }
 
 // Print a Matrix to the console

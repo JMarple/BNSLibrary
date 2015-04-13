@@ -42,6 +42,9 @@
 
 #define DEFAULT_DYNAMIC_ARRAY_SIZE 50
 
+#define DynamicArrayInit(a,e) _DynamicArray_Init(a, sizeof(e))
+#define DynamicArrayInitDefault(a,e,s) _DynamicArray_InitDefault(a, sizeof(e), s)
+
 // ------------------------------------------------------------------------
 //
 // DynamicArray is an array with an undefined size
@@ -60,19 +63,24 @@ struct DynamicArray
 
   // This points to a point in memory that our data is being put into
 	int pointer;
+
+	// Size of a single element in the array
+	// For instance, a struct could hold multiple elements, needing more space
+	//   then a single integer.
+	int elementSize;
 };
 
 // DynamicArrayInit(...)
 // Initializes the DynamicArray to default size
-bool DynamicArrayInit(struct DynamicArray *array);
+bool _DynamicArray_Init(struct DynamicArray *array, int elementSize);
 
 // DynamicArrayInitDefault(...)
 // Initializes the DynamicArray to a set size
-bool DynamicArrayInitDefault(struct DynamicArray *array, int setSize);
+bool _DynamicArray_InitDefault(struct DynamicArray *array, int elementSize, int setSize);
 
 // DynamicArrayGet(...)
 // Retrives data at a certain index
-float DynamicArrayGet(struct DynamicArray *array, int where);
+intptr_t DynamicArrayGet(struct DynamicArray *array, int where);
 
 // DynamicArrayCopy(...)
 // Copies an array from source to destination by reference

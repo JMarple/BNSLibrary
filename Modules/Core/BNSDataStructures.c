@@ -52,7 +52,7 @@
 // Initializes a dynamic array in memory
 // Default size is in BNSDataStructures.h as
 //  DEFAULT_DYNAMIC_ARRAY_SIZE
-bool DynamicArrayInit(struct DynamicArray *array)
+bool _DynamicArray_Init(struct DynamicArray *array, int elementSize)
 {
   DynamicArrayClear(array);
 
@@ -60,9 +60,17 @@ bool DynamicArrayInit(struct DynamicArray *array)
 
   if(array->pointer != -1)
   {
-    array->maxSize = DEFAULT_DYNAMIC_ARRAY_SIZE;
+    // Set element size to number of words (32bits) needed in the heap
+    //  to sore this datatype.
+    // For instance,
+    //  if 5 bytes are needed, (5-4)/(4) + 1 = 2 words to store 5 bytes
+    //  if 4 bytes are needed, (3-4)/(4) + 1 = 1 word to store 4 bytes
+    array->elementSize = (elementSize-1)/(sizeof(int32_t)) + 1;
+
+    array->maxSize = DEFAULT_DYNAMIC_ARRAY_SIZE * array->elementSize;
     array->size = 0;
     array->inUse = true;
+
     return true;
   }
   else
@@ -73,11 +81,18 @@ bool DynamicArrayInit(struct DynamicArray *array)
 
 // Initialize a dynamic array to a default size
 // SetSize is how much memory will be allocated by default
-bool DynamicArrayInitDefault(struct DynamicArray *array, int setSize)
+bool _DynamicArray_InitDefault(struct DynamicArray *array, int elementSize, int setSize)
 {
 	DynamicArrayClear(array);
 
-	array->pointer = bnsMalloc(setSize);
+	// Set element size to number of words (32bits) needed in the heap
+  //  to sore this datatype.
+  // For instance,
+  //  if 5 bytes are needed, (5-4)/(4) + 1 = 2 words to store 5 bytes
+  //  if 4 bytes are needed, (3-4)/(4) + 1 = 1 word to store 4 bytes
+  array->elementSize = (elementSize-1)/(sizeof(int32_t)) + 1;
+
+	array->pointer = bnsMalloc(setSize*array->elementSize);
 
 	if(array->pointer != -1)
 	{
@@ -97,9 +112,11 @@ bool DynamicArrayInitDefault(struct DynamicArray *array, int setSize)
 //   memory
 bool DynamicArrayAdd(struct DynamicArray *array, float value)
 {
+	intptr_t* fPtr = &value;
+
   if(array->size < array->maxSize)
   {
-    bnsSetHeapElement(array->pointer + array->size, value);
+    bnsSetHeapElement(array->pointer + array->size*array->elementSize, (int32_t)*fPtr);
     array->size++;
   }
   else
@@ -110,7 +127,7 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
     {
       array->pointer = res;
       array->maxSize *= 2;
-      bnsSetHeapElement(array->pointer + array->size, (int32_t)*(&value));
+      bnsSetHeapElement(array->pointer + array->size*array->elementSize, (int32_t)*fPtr);
       array->size++;
     }
     else
@@ -135,7 +152,7 @@ void DynamicArraySet(struct DynamicArray *array, int where, float value)
 
 		intptr_t* fPtr = &value;
 
-		bnsSetHeapElement(array->pointer + where, (int32_t)*fPtr);
+		bnsSetHeapElement(array->pointer + where*array->elementSize, (int32_t)*fPtr);
 	}
 }
 
@@ -156,12 +173,13 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
 {
 	int i;
 	DynamicArrayDelete(dst);
-	DynamicArrayInitDefault(dst, src.maxSize);
+	DynamicArrayInitDefault(dst, float, src.maxSize);
 
 	dst->inUse = true;
 	for(i = 0; i < dst->maxSize; i++)
 	{
-		DynamicArraySet(dst, i, DynamicArrayGet(&src, i));
+		float* x = (float*)(DynamicArrayGet(&src, i));
+		DynamicArraySet(dst, i, *x);
 	}
 
 	dst->size = src.size;
@@ -169,10 +187,10 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
 }
 
 // Retrivies a point of memory from the array
-float DynamicArrayGet(struct DynamicArray *array, int where)
+intptr_t DynamicArrayGet(struct DynamicArray *array, int where)
 {
-	float* fPtr = (float*)&bnsGetHeapElement(array->pointer + where);
-  return (float)(*fPtr);
+	intptr_t* x = bnsGetHeapElementMemory(array->pointer + where*array->elementSize);
+	return x;
 }
 
 // Removes a certain element from the array
@@ -232,7 +250,7 @@ void DynamicArrayDelete(struct DynamicArray *array)
 bool StackInit(struct Stack *object)
 {
   object->pos = -1;
-  return DynamicArrayInit(object->array);
+  return DynamicArrayInit(object->array, float);
 }
 
 // Removes the top-most number and returns it
@@ -245,10 +263,11 @@ float StackPop(struct Stack *object)
     return 0;
   }
 
-  float returnVal = DynamicArrayGet(object->array, object->pos);
+  float* returnVal = (float*)DynamicArrayGet(object->array, object->pos);
+  float actualReturnVal = *returnVal;
   object->pos--;
 
-  return returnVal;
+  return actualReturnVal;
 }
 
 // Puts an element to the top of the stack
@@ -275,7 +294,8 @@ float StackPeek(struct Stack *object)
     BNS_ERROR("STACK ERROR", "Cannot peek a stack of size zero!");
     return 0;
   }
-  return DynamicArrayGet(object->array, object->pos);
+  float* x = (float*)DynamicArrayGet(object->array, object->pos);
+  return *x;
 }
 
 // Returns true if the stack is completely empty
@@ -296,7 +316,7 @@ bool CircularBufferInit(struct CircularBuffer* object, int size)
 	if(size <= 0)
 		size = 1;
 
-	return DynamicArrayInitDefault(object->array, size+1);
+	return DynamicArrayInitDefault(object->array, float, size+1);
 }
 
 // Returns true if the buffer it completely empty
@@ -344,8 +364,8 @@ float CircularBufferGet(struct CircularBuffer* object)
 		BNS_ERROR("CIRCULAR BUFFER", "CIRCULAR BUFFER IS EMPTY in CircularBufferGet(...)");
 		return 0;
 	}
-	float returnResult = DynamicArrayGet(&object->array, object->startPos);
+	float* returnResult = (float*)DynamicArrayGet(&object->array, object->startPos);
 	object->startPos = (object->startPos+1)%CircularBufferSize(object);
-	return returnResult;
+	return *returnResult;
 }
 #endif
