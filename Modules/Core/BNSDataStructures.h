@@ -94,9 +94,13 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src);
 // Sets a certain point in memory to a given value
 void DynamicArraySet(struct DynamicArray *array, int where, float value);
 
+// DynamicArrayAddEmpty(...)
+// Increments the allocated memory without setting data to the heap
+bool DynamicArrayAddEmpty(struct DynamicArray *array);
+
 // DynamicArrayAdd(...)
 // This adds a new element to the array
-bool DynamicArrayAdd(struct DynamicArray *array, float value);
+bool DynamicArrayAdd(struct DynamicArray *array, intptr_t* fPtr);
 
 // DynamicArrayClear(...)
 // Clears data from array, but does not free up any memory

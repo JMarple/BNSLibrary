@@ -35,7 +35,7 @@ task main()
   BNS();
 
   // Initialize the dynamic array
-  writeDebugStreamLine("\nDynamic Array Example: Adding elements to array");
+  /*writeDebugStreamLine("\nDynamic Array Example: Adding elements to array");
   DynamicArray arr1;
   DynamicArrayInit(&arr1, float);
 
@@ -53,13 +53,50 @@ task main()
   {
   	float* x = DynamicArrayGet(&arr1, i);
   	writeDebugStreamLine("Element at %d is %d", i, *x);
-	}
+	}*/
 
-	writeDebugStreamLine("\nDynamic Arraay Struct Example: Adding elements to array");
+	writeDebugStreamLine("\nDynamic Array Struct Example: Adding elements to array");
+
+	// Set this Dynamic Array to carry "Stack" types.  Note: DynamicArrayInit
+	//  is a macro that allows for a "cleaner" way of defining what type a
+	//  dynamic array is using.
 	DynamicArray arr2;
-	DynamicArrayInit(&arr1, Stack);
+	DynamicArrayInit(&arr2, Stack);
 
+	// There are two ways of adding data to a stack.  The first is as follows:
+	// Define a stack structure the "usual" way and add it to the dynamic array
+	Stack lolz;
+	StackInit(lolz);
+	StackPush(lolz, 9.9);
+	StackPush(lolz, 8.3425243);
 
+	// The second way of adding data to the stack as follows:
+	// Add the stack to the dynamic array. Note: the contents at
+	//  the pointer &lolz is copied to the heap so you can reuse
+	//  the variale "lolz" for a new stack if wanted.
+	DynamicArrayAdd(&arr2, (intptr_t*)&lolz);
+
+	// Define a stack structure "dynamically" without defining a
+	//   Stack object at compile time
+	DynamicArrayAddEmpty(&arr2);
+	//   Note: DynamicArrayGet will return an intprt_t pointer, so
+	//   if you want to use it for a Stack, you must typecast it to
+	//   (Stack*)
+	Stack* x = (Stack*)DynamicArrayGet(&arr2, 1);
+	StackInit(x); // Use the stack 'x' as you would for a normal stack/object
+	StackPush(x, 123);
+	StackPush(x, 456);
+	StackPush(x, 789);
+
+	// Remote all elements from stack 0
+	x = (Stack*)DynamicArrayGet(&arr2, 0);
+	while(!StackIsEmpty(x))
+		writeDebugStreamLine("%f", StackPop(x));
+
+	// Remove all elements from stack 1
+	x = (Stack*)DynamicArrayGet(&arr2, 1);
+	while(!StackIsEmpty(x))
+			writeDebugStreamLine("%f", StackPop(x));
 
   // Initilize the stack
   writeDebugStreamLine("\nStack Example: Pushing/Popping 5, 45, and 88 to the stack");

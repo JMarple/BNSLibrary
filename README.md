@@ -1,4 +1,4 @@
-<h2>BNSLib V0.15.1</h2>
+<h2>BNSLib V0.20.0</h2>
 This library is designed to be an advanced library for Highschool and University Vex Robotics Teams.  It can be compiled on RobotC 4.27 (older versions may not compile correctly).  The library features several concepts:
  - Dynamic Memory Allocation
  - Complex Matrix Operations (+ - * /, deterimant, trace, and others)
@@ -69,4 +69,5 @@ Median Filter Basics:
  - V0.13.0: DynamicArray & Stack Data Structures Added. Added PID Integral functions.  
  - V0.13.3: BNSMatrix changed to use DynamicArray.  Significant bug found where uninitialized structs could seen as initialized. 
  - V0.14.0: SimpleKalmanFilter created.  CircularBuffer added as a data structure.
- - V0.15.0: Added MotionProfile Controller. 
+ - V0.15.0: Added MotionProfile Controller.
+ - V0.20.0: Large change on how BNSHeap is used.  DynamicArray changed to use any structure instead of strictly floats.

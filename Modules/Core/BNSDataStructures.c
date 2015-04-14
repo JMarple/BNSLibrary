@@ -67,7 +67,7 @@ bool _DynamicArray_Init(struct DynamicArray *array, int elementSize)
     //  if 4 bytes are needed, (3-4)/(4) + 1 = 1 word to store 4 bytes
     array->elementSize = (elementSize-1)/(sizeof(int32_t)) + 1;
 
-    array->maxSize = DEFAULT_DYNAMIC_ARRAY_SIZE * array->elementSize;
+    array->maxSize = DEFAULT_DYNAMIC_ARRAY_SIZE;
     array->size = 0;
     array->inUse = true;
 
@@ -107,17 +107,14 @@ bool _DynamicArray_InitDefault(struct DynamicArray *array, int elementSize, int 
 	}
 }
 
-// Automatically adds a new element into DynamicArray
+// Automatically adds an empty element into DynamicArray
 // If new space is needed, it will automatically allocate that
 //   memory
-bool DynamicArrayAdd(struct DynamicArray *array, float value)
+bool DynamicArrayAddEmpty(struct DynamicArray *array)
 {
-	intptr_t* fPtr = &value;
-
-  if(array->size < array->maxSize)
+	if(array->size*array->elementSize < array->maxSize)
   {
-    bnsSetHeapElement(array->pointer + array->size*array->elementSize, (int32_t)*fPtr);
-    array->size++;
+    array->size+=array->elementSize;
   }
   else
   {
@@ -127,8 +124,44 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
     {
       array->pointer = res;
       array->maxSize *= 2;
-      bnsSetHeapElement(array->pointer + array->size*array->elementSize, (int32_t)*fPtr);
-      array->size++;
+      array->size+=array->elementSize;
+    }
+    else
+    {
+      BNS_ERROR("DYNAMIC ARRAY", "Ran out of memory! Check DynamicArrayAddEmpty(...)");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// Automatically adds an element into DynamicArray
+// If new space is needed, it will automatically allocate that
+//   memory
+// Note whatever is located at fPtr will be copied into the heap,
+//   so the original variable can be reused if wanted
+bool DynamicArrayAdd(struct DynamicArray *array, intptr_t* fPtr)
+{
+  if(array->size*array->elementSize < array->maxSize)
+  {
+  	for(int i = 0; i < array->elementSize; i++)
+    	bnsSetHeapElement(array->pointer + array->size*array->elementSize + i, (int32_t)*(fPtr+i));
+
+    array->size+=array->elementSize;
+  }
+  else
+  {
+    //writeDebugStreamLine("%d Trying to extend", array->size);
+    int res = bnsExtend(array->pointer, array->maxSize*2);
+    if(res != -1)
+    {
+      array->pointer = res;
+      array->maxSize *= 2;
+      for(int i = 0; i < array->elementSize; i++)
+      	bnsSetHeapElement(array->pointer + array->size*array->elementSize + i, (int32_t)*(fPtr+i));
+
+      array->size+=array->elementSize;
     }
     else
     {
@@ -138,6 +171,13 @@ bool DynamicArrayAdd(struct DynamicArray *array, float value)
   }
 
   return true;
+}
+
+// Adds a number to the dynamic array
+void DynamicArrayAddInteger(struct DynamicArray *array, int32_t value)
+{
+	int32_t tmpV = value;
+	DynamicArrayAdd(array, &tmpV);
 }
 
 // Sets a point in memory
@@ -189,6 +229,10 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
 // Retrivies a point of memory from the array
 intptr_t DynamicArrayGet(struct DynamicArray *array, int where)
 {
+	// Throw error if trying to use unallocated memory
+	if(where*array->elementSize >= array->size)
+		BNS_ERROR("DYNAMIC ARRAY", "TRYING TO ALLOCATE MEMORY OUTSIDE DYNAMIC ARRAY SIZE");
+
 	intptr_t* x = bnsGetHeapElementMemory(array->pointer + where*array->elementSize);
 	return x;
 }
@@ -273,7 +317,7 @@ float StackPop(struct Stack *object)
 // Puts an element to the top of the stack
 bool StackPush(struct Stack *object, float value)
 {
-  bool good = DynamicArrayAdd(object->array, value);
+  bool good = DynamicArrayAdd(object->array, (intptr_t*)&value);
 
   if(good)
   {
