@@ -35,6 +35,8 @@
 #ifndef __BNS_MOTOR_CONTROL_C
 #define __BNS_MOTOR_CONTROL_C
 
+#pragma systemFile
+
 #ifndef __BNS_MOTOR_CONTROL_H
 #include "MotorControl.h"
 #endif
@@ -51,73 +53,133 @@ void MotorControlInit(MotorControl* controller, word motor0, word motor1, word m
 	controller->motorMode = MODE_PWM;
 
 	controller->motorPWM = 0;
+	controller->motorPWMLimit = 127;
 	controller->targetPosition = 0;
 	controller->targetVelocity = 0;
 
-	PIDInit(controller->pidContr, 0.2, 0.0, 0.0);
+	if(sensorType == SENSOR_IME)
+	{
+		nMotorEncoder[motor0] = 0;
+	}
+
+	RobotDataInit(&controller->sensorData);
 }
 
-void MotorControlSetPWMMode(MotorControl* controller)
+void MotorControlSetPositionPID(MotorControl* controller, float kP, float kI, float kD)
+{
+	PIDInit(controller->posPID, kP, kI, kD);
+}
+
+void MotorControlSetVelocityPID(MotorControl* controller, float kP, float kI, float kD)
+{
+	PIDInit(controller->velPID, kP, kI, kD);
+}
+
+void MotorControlSetPWM(MotorControl* controller, float target)
 {
 	controller->motorMode = MODE_PWM;
+	controller->motorPWM = target;
 }
 
-void MotorControlSetVelocityMode(MotorControl* controller)
+void MotorControlSetVelocity(MotorControl* controller, float target)
 {
 	controller->motorMode = MODE_VELOCITY;
+	controller->targetVelocity = target;
 }
 
-void MotorControlSetPositionMode(MotorControl* controller)
+void MotorControlSetPosition(MotorControl* controller, float target)
 {
 	controller->motorMode = MODE_POSITION;
+	controller->targetPosition = target;
 }
 
-// Sets a new target value for whichever mode it is in.  For instance,
-//  if it is in velocity/position mode, it will set the target position/velocity
-//  If it is in PWM mode, it will set the PWM value
-void MotorControlSet(MotorControl* controller, float target)
+void MotorControlSetPWMLimit(MotorControl* controller, int limit)
 {
-	switch(controller->motorMode)
-	{
-		case MODE_PWM:
-			controller->motorPWM = target;
-			break;
+	controller->motorPWMLimit = abs(limit);
+}
 
-		case MODE_VELOCITY:
-			controller->targetVelocity = target;
-			break;
+void MotorControlResetPWMLimit(MotorControl* controller)
+{
+	controller->motorPWMLimit = 127;
+}
 
-		case MODE_POSITION:
-		  controller->targetPosition = target;
-		  break;
-	}
+void _MotorControlLimitPWM(MotorControl* controller)
+{
+	// Limit PWM
+  if(controller->motorPWM > controller->motorPWMLimit)
+		controller->motorPWM = controller->motorPWMLimit;
+  else if(controller->motorPWM < -controller->motorPWMLimit)
+  	controller->motorPWM = -controller->motorPWMLimit;
 }
 
 // This updates the actual motor PWM values
 void MotorControlUpdate(MotorControl* controller)
 {
-		switch(controller->motorMode)
-		{
-			case MODE_PWM:
-			  int i;
-			  for(i = 0; i < MAX_MOTORS; i++)
-					if(controller->motors[i] != -1)
-						motor[controller->motors[i]] = controller->motorPWM;
-			  break;
+	// Update Sensor Position, Velocity, and Acceleration information for easily calculating
+	//  Position and Velocity PID
+	if(controller->sensorType == SENSOR_IME)
+	{
+			RobotDataUpdatePosition(&controller->sensorData, nMotorEncoder[controller->motors[0]]);
+	}
+	else if(controller->sensorType == SENSOR_POT)
+	{
+			RobotDataUpdatePosition(&controller->sensorData, SensorValue[controller->sensor]);
+	}
+	else if(controller->sensorType == SENSOR_ENCODER)
+	{
+			// Untested, should work though
+			RobotDataUpdatePosition(&controller->sensorData, SensorValue[controller->sensor]);
+	}
 
-			case MODE_VELOCITY:
+	// Update Motor PWM depending on which mode we're using
+	switch(controller->motorMode)
+	{
+		// PWM MODE (directly control PWM of the motors)
+		case MODE_PWM:
 
-				controller->motorPWM +=
-								PIDCompute(controller->pidContr,
-													controller->targetVelocity - controller->sensorData.velocity);
+			_MotorControlLimitPWM(controller);
 
+	    // Update all the motors to this PWM
+		  int i;
+		  for(i = 0; i < MAX_MOTORS; i++)
+				if(controller->motors[i] != -1)
+					motor[controller->motors[i]] = controller->motorPWM;
+		  break;
 
-				break;
+		// VELOCITY MODE (try to maintain a certain velocity)
+		case MODE_VELOCITY:
 
-			case MODE_POSITION:
-				break;
+			// Calculate Velocity PID
+			controller->motorPWM +=
+							PIDCompute(controller->velPID,
+												controller->targetVelocity - controller->sensorData.velocity);
 
-		}
+			// Force PWM within bounds of -motorPWMLimits and motorPWMLimts
+			_MotorControlLimitPWM(controller);
+
+			// Update all the motors to this PWM
+			for(i = 0; i < MAX_MOTORS; i++)
+				if(controller->motors[i] != -1)
+					motor[controller->motors[i]] = controller->motorPWM;
+
+			break;
+
+		// POSITION MODE (try to maintain a certain position)
+		case MODE_POSITION:
+		  controller->motorPWM =
+		  				PIDCompute(controller->posPID,
+		  									controller->targetPosition - controller->sensorData.position);
+
+		  // Force PWM within bounds of -motorPWMLimits and motorPWMLimts
+		  _MotorControlLimitPWM(controller);
+
+		 	// Update all the motors to this PWM
+			for(i = 0; i < MAX_MOTORS; i++)
+				if(controller->motors[i] != -1)
+					motor[controller->motors[i]] = controller->motorPWM;
+
+		 	break;
+	}
 }
 
 #endif

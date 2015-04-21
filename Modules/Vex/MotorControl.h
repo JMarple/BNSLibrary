@@ -58,11 +58,13 @@ struct MotorControl
 	// Feedback Data for this motor
 	struct RobotData sensorData;
 
-	struct PID pidContr;
+	struct PID posPID;
+	struct PID velPID;
 
 	// Motors being controlled (set extra slots to -1)
 	word motors[MAX_MOTORS];
 	int motorPWM;
+	int motorPWMLimit;
 
 	// Target Position/Velocity
 	float targetPosition;
@@ -79,5 +81,15 @@ struct MotorControl
 	// MODE_PWM, MODE_VELOCITY, MODE_POSITION?
 	byte motorMode;
 };
+
+void MotorControlInit(MotorControl* controller, word motor0, word motor1, word motor2, word motor3, word sensor, byte sensorType);
+void MotorControlSetPositionPID(MotorControl* controller, float kP, float kI, float kD);
+void MotorControlSetVelocityPID(MotorControl* controller, float kP, float kI, float kD);
+void MotorControlSetPWM(MotorControl* controller, float target);
+void MotorControlSetVelocity(MotorControl* controller, float target);
+void MotorControlSetPosition(MotorControl* controller, float target);
+void MotorControlSetPWMLimit(MotorControl* controller, int limit);
+void MotorControlResetPWMLimit(MotorControl* controller);
+void MotorControlUpdate(MotorControl* controller);
 
 #endif
