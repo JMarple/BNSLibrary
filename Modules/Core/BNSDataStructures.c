@@ -204,6 +204,7 @@ bool DynamicArrayCopy(struct DynamicArray *dst, struct DynamicArray src)
 	dst->size = src.size;
 	dst->inUse = src.inUse;
 	dst->pointer = src.pointer;
+	dst->elementSize = src.elementSize;
 
 	return true;
 }
@@ -232,6 +233,9 @@ intptr_t DynamicArrayGet(struct DynamicArray *array, int where)
 	// Throw error if trying to use unallocated memory
 	if(where*array->elementSize >= array->size)
 		BNS_ERROR("DYNAMIC ARRAY", "TRYING TO ALLOCATE MEMORY OUTSIDE DYNAMIC ARRAY SIZE");
+
+	int thePointer = array->pointer;
+	int theSize = array->elementSize;
 
 	intptr_t* x = bnsGetHeapElementMemory(array->pointer + where*array->elementSize);
 	return x;
