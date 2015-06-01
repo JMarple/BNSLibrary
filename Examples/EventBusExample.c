@@ -52,7 +52,7 @@ task EventPrinter()
 		if(pChar != 0)
 			writeDebugStreamLine("Message from User 1: %d", *pChar);
 
-	  // Check for messages on userID2
+		// Check for messages on userID2
 		string* pString1 = (string*)EventBusGetMessage(userID2);
 		if(pString1 != 0)
 			writeDebugStreamLine("Message from User 2: %s", *pString1);
@@ -81,7 +81,7 @@ task main()
 	char alpha = 42;
 	string helloWorld = "Hello World";
 	string foofoofoo = "foo foo foo!";
-  EventBusPublish(0x01, &alpha);
-  EventBusPublish(0x02, &helloWorld);
-  EventBusPublish(0x02, &foofoofoo);
+	EventBusPublish(0x01, &alpha);
+	EventBusPublish(0x02, &helloWorld);
+	EventBusPublish(0x02, &foofoofoo);
 }
