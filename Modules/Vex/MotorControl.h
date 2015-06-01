@@ -62,7 +62,7 @@ struct MotorControl
 	struct PID velPID;
 
 	// Motors being controlled (set extra slots to -1)
-	word motors[MAX_MOTORS];
+	tMotor motors[MAX_MOTORS];
 	int motorPWM;
 	int motorPWMLimit;
 
@@ -75,14 +75,14 @@ struct MotorControl
 	byte sensorType;
 
 	// The sensor we are using
-	word sensor;
+	tSensors sensor;
 
 	// Which mode are we running this controller in?
 	// MODE_PWM, MODE_VELOCITY, MODE_POSITION?
 	byte motorMode;
 };
 
-void MotorControlInit(MotorControl* controller, word motor0, word motor1, word motor2, word motor3, word sensor, byte sensorType);
+void MotorControlInit(MotorControl* controller, tMotor motor0, tMotor motor1, tMotor motor2, tMotor motor3, tSensors sensor, byte sensorType);
 void MotorControlSetPositionPID(MotorControl* controller, float kP, float kI, float kD);
 void MotorControlSetVelocityPID(MotorControl* controller, float kP, float kI, float kD);
 void MotorControlSetPWM(MotorControl* controller, float target);

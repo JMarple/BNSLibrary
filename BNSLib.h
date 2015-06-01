@@ -37,6 +37,7 @@
 #include "Modules\Core\Matrix\BNSMatrixScalar.c"
 #include "Modules\Core\BNSDataStructures.c"
 #include "Modules\Core\Probability\BNSGaussian.c"
+#include "Modules\Core\BNSEventBus.c"
 
 // Control
 #include "Modules\Control\RobotData.c"

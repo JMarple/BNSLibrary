@@ -41,7 +41,7 @@
 #include "MotorControl.h"
 #endif
 
-void MotorControlInit(MotorControl* controller, word motor0, word motor1, word motor2, word motor3, word sensor, byte sensorType)
+void MotorControlInit(MotorControl* controller, tMotor motor0, tMotor motor1, tMotor motor2, tMotor motor3, tSensors sensor, byte sensorType)
 {
 	controller->motors[0] = motor0;
 	controller->motors[1] = motor1;

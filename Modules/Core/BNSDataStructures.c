@@ -141,7 +141,7 @@ bool DynamicArrayAddEmpty(struct DynamicArray *array)
 //   memory
 // Note whatever is located at fPtr will be copied into the heap,
 //   so the original variable can be reused if wanted
-bool DynamicArrayAdd(struct DynamicArray *array, intptr_t* fPtr)
+bool _DynamicArray_Add(struct DynamicArray *array, intptr_t* fPtr)
 {
   if(array->size*array->elementSize < array->maxSize)
   {
@@ -181,18 +181,21 @@ void DynamicArrayAddInteger(struct DynamicArray *array, int32_t value)
 }
 
 // Sets a point in memory
-void DynamicArraySet(struct DynamicArray *array, int where, float value)
+void _DynamicArray_Set(struct DynamicArray *array, int where, intptr_t* fPtr)
 {
-	if(where < array->maxSize)
+	if(where*array->elementSize < array->maxSize)
 	{
 		// This makes sure the pointer to where to add data isn't
 	  //  overwriting data
-		if(where >= array->size)
-			array->size = where+1;
+		if(where*array->elementSize >= array->size)
+			array->size = where*array->elementSize+1;
 
-		intptr_t* fPtr = &value;
-
-		bnsSetHeapElement(array->pointer + where*array->elementSize, (int32_t)*fPtr);
+		for(int i = 0; i < array->elementSize; i++)
+    	bnsSetHeapElement(array->pointer + where*array->elementSize + i, (int32_t)*(fPtr+i));
+	}
+	else
+	{
+		// TODO: Need to expand the memory?
 	}
 }
 
@@ -219,8 +222,7 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src)
 	dst->inUse = true;
 	for(i = 0; i < dst->maxSize; i++)
 	{
-		float* x = (float*)(DynamicArrayGet(&src, i));
-		DynamicArraySet(dst, i, *x);
+		DynamicArraySet(dst, i, DynamicArrayGet(&src, i));
 	}
 
 	dst->size = src.size;
@@ -272,7 +274,7 @@ void DynamicArrayClear(struct DynamicArray *array)
 // Returns how large the array is
 int DynamicArraySize(struct DynamicArray *array)
 {
-  return array->size;
+  return array->size/array->elementSize;
 }
 
 // Returns how much memory has been allocated
@@ -295,15 +297,15 @@ void DynamicArrayDelete(struct DynamicArray *array)
 }
 
 // Initialize the stack
-bool StackInit(struct Stack *object)
+bool _Stack_Init(struct Stack *object, int elementSize)
 {
   object->pos = -1;
-  return DynamicArrayInit(object->array, float);
+  return _DynamicArray_Init(object->array, elementSize);
 }
 
 // Removes the top-most number and returns it
 //  to the user
-float StackPop(struct Stack *object)
+intptr_t StackPop(struct Stack *object)
 {
   if(object->pos < 0)
   {
@@ -311,17 +313,16 @@ float StackPop(struct Stack *object)
     return 0;
   }
 
-  float* returnVal = (float*)DynamicArrayGet(object->array, object->pos);
-  float actualReturnVal = *returnVal;
+  intptr_t returnVal = DynamicArrayGet(object->array, object->pos);
   object->pos--;
 
-  return actualReturnVal;
+  return returnVal;
 }
 
 // Puts an element to the top of the stack
-bool StackPush(struct Stack *object, float value)
+bool _Stack_Push(struct Stack *object, intptr_t* value)
 {
-  bool good = DynamicArrayAdd(object->array, (intptr_t*)&value);
+  bool good = DynamicArrayAdd(object->array, value);
 
   if(good)
   {
@@ -335,15 +336,15 @@ bool StackPush(struct Stack *object, float value)
 }
 
 // Look at the top element without removing it
-float StackPeek(struct Stack *object)
+intptr_t StackPeek(struct Stack *object)
 {
   if(object->pos < 0)
   {
     BNS_ERROR("STACK ERROR", "Cannot peek a stack of size zero!");
     return 0;
   }
-  float* x = (float*)DynamicArrayGet(object->array, object->pos);
-  return *x;
+
+  return DynamicArrayGet(object->array, object->pos);
 }
 
 // Returns true if the stack is completely empty
@@ -356,7 +357,7 @@ bool StackIsEmpty(struct Stack *object)
 }
 
 // Initializes the buffer to a set size
-bool CircularBufferInit(struct CircularBuffer* object, int size)
+bool _CircularBuffer_Init(struct CircularBuffer* object, int objectsize, int size)
 {
 	object->startPos = 0;
 	object->endPos = 0;
@@ -364,7 +365,7 @@ bool CircularBufferInit(struct CircularBuffer* object, int size)
 	if(size <= 0)
 		size = 1;
 
-	return DynamicArrayInitDefault(object->array, float, size+1);
+	return _DynamicArray_InitDefault(object->array, objectsize, size+1);
 }
 
 // Returns true if the buffer it completely empty
@@ -392,7 +393,7 @@ int CircularBufferSize(struct CircularBuffer* object)
 }
 
 // Adds a new element to a circular buffer
-bool CircularBufferAdd(struct CircularBuffer* object, float value)
+bool _CircularBuffer_Add(struct CircularBuffer* object, intptr_t* value)
 {
 	if(CircularBufferIsFull(object))
 	{
@@ -405,15 +406,17 @@ bool CircularBufferAdd(struct CircularBuffer* object, float value)
 }
 
 // Gets the next element on the circular buffer
-float CircularBufferGet(struct CircularBuffer* object)
+intptr_t CircularBufferGet(struct CircularBuffer* object)
 {
 	if(CircularBufferIsEmpty(object))
 	{
 		BNS_ERROR("CIRCULAR BUFFER", "CIRCULAR BUFFER IS EMPTY in CircularBufferGet(...)");
 		return 0;
 	}
-	float* returnResult = (float*)DynamicArrayGet(&object->array, object->startPos);
+
+	intptr_t returnResult = DynamicArrayGet(&object->array, object->startPos);
 	object->startPos = (object->startPos+1)%CircularBufferSize(object);
-	return *returnResult;
+
+	return returnResult;
 }
 #endif

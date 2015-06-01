@@ -125,6 +125,8 @@ task main()
                     moveVector
                   );
 
+  writeDebugStreamLine("Starting Kalman Filter Function:");
+
   // This is where we will input our "data" into the filter
   // For this example, we are giving "i" and "i*2" as an input position
   // So we expect our position to be "20" and "40", with the velocity to be
@@ -142,7 +144,9 @@ task main()
     SetMatrixAt(data, 1, 0, i*2 + noise);
 
     // Predict and Update Kalman Filter
+    writeDebugStreamLine("Iteration %d Predict", i);
     KalmanPredict(&filter);
+    writeDebugStreamLine("Iteration %d Update", i);
 	  KalmanUpdate(&filter, data);
   }
 
@@ -155,4 +159,6 @@ task main()
   writeDebugStreamLine("Pos2 = %f, Vel2 = %f",
   GetMatrixAt(filter.meanVector, 2, 0),
   GetMatrixAt(filter.meanVector, 3, 0));
+
+  while(1==1);
 }

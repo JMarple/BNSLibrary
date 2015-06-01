@@ -3,5 +3,6 @@
 
 void BNS();
 void BNS_ERROR(char* errorTitle, char* error);
+void BNSEventBus();
 
 #endif

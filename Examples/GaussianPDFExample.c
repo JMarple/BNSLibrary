@@ -52,6 +52,10 @@ task main()
   Matrix cov;
   CreateMatrix(&cov, "0.1 0 0; 0 0.1 0; 0 0 0.1;");
 
+  PrintMatrix(&data);
+  PrintMatrix(&mean);
+  PrintMatrix(&cov);
+
   // Setup our gaussian
   Gaussian gau;
   GaussianInit(&gau, mean, cov);

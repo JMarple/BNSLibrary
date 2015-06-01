@@ -44,7 +44,13 @@
 
 #define DynamicArrayInit(a,e) _DynamicArray_Init(a, sizeof(e))
 #define DynamicArrayInitDefault(a,e,s) _DynamicArray_InitDefault(a, sizeof(e), s)
+#define DynamicArrayAdd(a,s) _DynamicArray_Add(a, (intptr_t*)s)
+#define DynamicArraySet(a,e,s) _DynamicArray_Set(a, e,(intptr_t*)s)
+#define StackInit(a, e) _Stack_Init(a, sizeof(e))
+#define StackPush(a, e) _Stack_Push(a, (intptr_t*)e)
 
+#define CircularBufferInit(a,e,s) _CircularBuffer_Init(a, sizeof(e), s)
+#define CircularBufferAdd(a, s) _CircularBuffer_Add(a, (intptr_t*)s)
 // ------------------------------------------------------------------------
 //
 // DynamicArray is an array with an undefined size
@@ -92,7 +98,7 @@ bool DynamicArrayCopyByValue(struct DynamicArray *dst, struct DynamicArray src);
 
 // DynamicArraySet(...)
 // Sets a certain point in memory to a given value
-void DynamicArraySet(struct DynamicArray *array, int where, float value);
+void _DynamicArray_Set(struct DynamicArray *array, int where, intptr_t* fPtr);
 
 // DynamicArrayAddEmpty(...)
 // Increments the allocated memory without setting data to the heap
@@ -100,7 +106,7 @@ bool DynamicArrayAddEmpty(struct DynamicArray *array);
 
 // DynamicArrayAdd(...)
 // This adds a new element to the array
-bool DynamicArrayAdd(struct DynamicArray *array, intptr_t* fPtr);
+bool _DynamicArray_Add(struct DynamicArray *array, intptr_t* fPtr);
 
 // DynamicArrayClear(...)
 // Clears data from array, but does not free up any memory
@@ -141,19 +147,19 @@ struct Stack
 
 // StackInit(...)
 // Starts the stack with it's default values
-bool StackInit(struct Stack *object);
+bool _Stack_Init(struct Stack *object, int elementSize);
 
 // StackPop(...)
 // Removes the top most element and returns it
-float StackPop(struct Stack *object);
+intptr_t StackPop(struct Stack *object);
 
 // StackPush(...)
 // Adds a new element to the top of the stack
-bool StackPush(struct Stack *object, float value);
+bool _Stack_Push(struct Stack *object, intptr_t* value);
 
 // StackPeek(...)
 // Shows the top most element without removing it
-float StackPeek(struct Stack *object);
+intptr_t StackPeek(struct Stack *object);
 
 // StackIsEmpty(...)
 // Returns true if the stack is completely empty
@@ -175,12 +181,12 @@ struct CircularBuffer
 
 // CircularBufferInit(...)
 // Initilizes default values into the circular buffer
-bool CircularBufferInit(struct CircularBuffer* object, int size);
+bool _CircularBuffer_Init(struct CircularBuffer* object, int objectsize, int size);
 
 bool CircularBufferIsEmpty(struct CircularBuffer* object);
 bool CircularBufferIsFull(struct CircularBuffer* object);
 int CircularBufferSize(struct CircularBuffer* object);
-bool CircularBufferAdd(struct CircularBuffer* object, float value);
-float CircularBufferGet(struct CircularBuffer* object);
+bool _CircularBuffer_Add(struct CircularBuffer* object, intptr_t* value);
+intptr_t CircularBufferGet(struct CircularBuffer* object);
 
 #endif

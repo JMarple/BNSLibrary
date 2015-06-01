@@ -58,6 +58,8 @@
 #endif
 
 // Global variable that matricies call to
+// The heap is a singleton, so we will declare a
+// global variable for it
 int32_t bnsHeap[BUFFER_SIZE];
 
 // initMemory(...)

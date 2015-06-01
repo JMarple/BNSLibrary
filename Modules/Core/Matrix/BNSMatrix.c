@@ -267,7 +267,7 @@ void SetMatrixAt(struct Matrix *mat, int m, int n, float value)
 {
 	if(m <= mat->m && n <= mat->n)
   {
-  	DynamicArraySet(&mat->array, mat->n * m + n, value);
+  	DynamicArraySet(&mat->array, mat->n * m + n, &value);
   }
 }
 
