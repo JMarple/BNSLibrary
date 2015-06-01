@@ -62,7 +62,7 @@ void MotorControlInit(MotorControl* controller, tMotor motor0, tMotor motor1, tM
 		nMotorEncoder[motor0] = 0;
 	}
 
-	RobotDataInit(&controller->sensorData);
+	RobotDataInit(&controller->sensorData, 5);
 }
 
 void MotorControlSetPositionPID(MotorControl* controller, float kP, float kI, float kD)
@@ -152,7 +152,7 @@ void MotorControlUpdate(MotorControl* controller)
 			// Calculate Velocity PID
 			controller->motorPWM +=
 							PIDCompute(controller->velPID,
-												controller->targetVelocity - controller->sensorData.velocity);
+												controller->targetVelocity - RobotDataGetVelocitySummed(&controller->sensorData));
 
 			// Force PWM within bounds of -motorPWMLimits and motorPWMLimts
 			_MotorControlLimitPWM(controller);

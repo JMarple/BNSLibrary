@@ -188,5 +188,6 @@ bool CircularBufferIsFull(struct CircularBuffer* object);
 int CircularBufferSize(struct CircularBuffer* object);
 bool _CircularBuffer_Add(struct CircularBuffer* object, intptr_t* value);
 intptr_t CircularBufferGet(struct CircularBuffer* object);
+intptr_t CircularBufferPeek(struct CircularBuffer* object, int where);
 
 #endif

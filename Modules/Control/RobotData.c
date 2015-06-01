@@ -46,41 +46,112 @@
 #endif
 
 // Initializes all data to 0
-void RobotDataInit(RobotData* rData)
+void RobotDataInit(RobotData* rData, int size)
 {
-	rData->position = 0;
-	rData->velocity = 0;
-	rData->acceleration = 0;
+	rData->cirBufferSize = size;
+	CircularBufferInit(&rData->position, float, size);
+	CircularBufferInit(&rData->velocity, float, size);
+	CircularBufferInit(&rData->acceleration, float, size);
 
-	rData->previousPosition = 0;
-	rData->previousVelocity = 0;
-	rData->previousAcceleration = 0;
+	float initialValue = 0;
+
+	for(int i = 0; i < size; i++)
+	{
+		CircularBufferAdd(&rData->position, &initialValue);
+		CircularBufferAdd(&rData->velocity, &initialValue);
+		CircularBufferAdd(&rData->acceleration, &initialValue);
+	}
 }
 
 // Updates the position, and then calculates the corresponding velocities
 // and acceleration from that
 void RobotDataUpdatePosition(RobotData* rData, float data)
 {
-	rData->previousPosition = rData->position;
-	rData->previousVelocity = rData->velocity;
-	rData->previousAcceleration = rData->velocity;
+	float prevPosition = RobotDataGetPosition(rData, 0);
+	float prevVelocity = RobotDataGetPosition(rData, 0);
+	float position = data;
+	float velocity = prevPosition - position;
+	float acceleration = prevVelocity - velocity;
 
-	rData->position = data;
-	rData->velocity = rData->previousPosition - rData->position;
-	rData->acceleration = rData->previousVelocity - rData->velocity;
+	CircularBufferGet(&rData->position);
+	CircularBufferGet(&rData->velocity);
+	CircularBufferGet(&rData->acceleration);
+
+	CircularBufferAdd(&rData->position, &position);
+	CircularBufferAdd(&rData->velocity, &velocity);
+	CircularBufferAdd(&rData->acceleration, &acceleration);
 }
 
 // Updates the velocity, and then integrates position and calculates
 //  the corresponding acceleration
 void RobotDataUpdateVelocity(RobotData* rData, float velocity)
 {
-	rData->previousPosition = rData->position;
-	rData->previousVelocity = rData->velocity;
-	rData->previousAcceleration = rData->velocity;
+  float position = RobotDataGetPosition(rData, 0) + velocity;
+  float acceleration = RobotDataGetPosition(rData, 0) - velocity;
 
-	rData->velocity = velocity;
-	rData->position += rData->velocity;
-	rData->acceleration = rData->previousVelocity - rData->velocity;
+	CircularBufferGet(&rData->position);
+	CircularBufferGet(&rData->velocity);
+	CircularBufferGet(&rData->acceleration);
+
+	CircularBufferAdd(&rData->position, &position);
+	CircularBufferAdd(&rData->velocity, &velocity);
+	CircularBufferAdd(&rData->acceleration, &acceleration);
 }
 
+// Gets the position from the circular buffer.  Note: where = 0 is the most recent data
+float RobotDataGetPosition(RobotData* rData, int where)
+{
+	float* x = (float*)CircularBufferPeek(&rData->position, rData->cirBufferSize - 1 - where);
+	return *x;
+}
+
+// Gets the velocity from the circular buffer.  Note: where = 0 is the most recent data
+float RobotDataGetVelocity(RobotData* rData, int where)
+{
+	float* x = (float*)CircularBufferPeek(&rData->velocity, rData->cirBufferSize - 1 - where);
+	return *x;
+}
+
+// Gets the acceleration from the circular buffer.  Note: where = 0 is the most recent data
+float RobotDataGetAcceleration(RobotData* rData, int where)
+{
+	float* x = (float*)CircularBufferPeek(&rData->acceleration, rData->cirBufferSize - 1 - where);
+	return *x;
+}
+
+// Sums all the positional data together
+float RobotDataGetPositionSummed(RobotData* rData)
+{
+	float value = 0;
+	for(int i = 0; i < rData->cirBufferSize; i++)
+	{
+		value += RobotDataGetPosition(rData, i);
+	}
+
+	return value;
+}
+
+// Sums all the velocity data together
+float RobotDataGetVelocitySummed(RobotData* rData)
+{
+	float value = 0;
+	for(int i = 0; i < rData->cirBufferSize; i++)
+	{
+		value += RobotDataGetVelocity(rData, i);
+	}
+
+	return value;
+}
+
+// Sums all the acceleration data together
+float RobotDataGetAccelerationSummed(RobotData* rData)
+{
+	float value = 0;
+	for(int i = 0; i < rData->cirBufferSize; i++)
+	{
+		value += RobotDataGetAcceleration(rData, i);
+	}
+
+	return value;
+}
 #endif

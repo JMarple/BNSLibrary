@@ -419,4 +419,15 @@ intptr_t CircularBufferGet(struct CircularBuffer* object)
 
 	return returnResult;
 }
+
+intptr_t CircularBufferPeek(struct CircularBuffer* object, int where)
+{
+	if(CircularBufferIsEmpty(object))
+	{
+		BNS_ERROR("CIRCULAR BUFFER", "CIRCULAR BUFFER IS EMPTY in CircularBufferGet(...)");
+		return 0;
+	}
+
+	return DynamicArrayGet(&object->array, (object->startPos+where)%CircularBufferSize(object));
+}
 #endif

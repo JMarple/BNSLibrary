@@ -39,20 +39,22 @@
 #ifndef __BNS_ROBOT_DATA_H
 #define __BNS_ROBOT_DATA_H
 
+#ifndef __BNS_DATA_STRUCTURES_H
+#include "../Core/BNSDataStructures.h"
+#endif
+
 struct RobotData
 {
-	float position;
-	float velocity;
-	float acceleration;
+	CircularBuffer position;
+	CircularBuffer velocity;
+	CircularBuffer acceleration;
 
-	float previousPosition;
-	float previousVelocity;
-	float previousAcceleration;
+	int cirBufferSize;
 };
 
 // RobotDataInit(...)
 // Initializes all the variables in the struct to zeo
-void RobotDataInit(RobotData* rData);
+void RobotDataInit(RobotData* rData, int size);
 
 // RobotDataUpdatePosition(...)
 // Given a position input, this function will updates the
@@ -64,4 +66,13 @@ void RobotDataUpdatePosition(RobotData* rData, float data);
 //  position and acceleration variables
 void RobotDataUpdateVelocity(RobotData* rData, float velocity);
 
+// RobotDataGet____(...)
+float RobotDataGetPosition(RobotData* rData, int where);
+float RobotDataGetVelocity(RobotData* rData, int where);
+float RobotDataGetAcceleration(RobotData* rData, int where);
+
+// RobotDataGet____Summed(...)
+float RobotDataGetPositionSummed(RobotData* rData);
+float RobotDataGetVelocitySummed(RobotData* rData);
+float RobotDataGetAccelerationSummed(RobotData* rData);
 #endif
