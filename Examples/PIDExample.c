@@ -65,7 +65,7 @@ task main()
     float pidResult = PIDCompute(&pid1, targetMotorSpeed - motorSpeed);
 
     // Add pid to motor value
-    motorSpeed += pidResult;
+    motorSpeed = pidResult;
 
     // This "simulates" our robot's dynamics, not necessary for a real robot
     motorSpeed += momentum;
